@@ -1,0 +1,92 @@
+services:
+  # Flask application
+  - type: web
+    name: flask-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false  # Means you'll set this value manually in the Render dashboard
+      # Database connection environment variables
+      - key: MYSQL_HOST
+        fromService:
+          name: mysql
+          type: mysql
+          property: host
+      - key: MYSQL_PORT
+        fromService:
+          name: mysql
+          type: mysql
+          property: port
+      - key: MYSQL_USER
+        fromService:
+          name: mysql
+          type: mysql
+          property: user
+      - key: MYSQL_PASSWORD
+        fromService:
+          name: mysql
+          type: mysql
+          property: password
+      - key: MYSQL_DATABASE
+        fromService:
+          name: mysql
+          type: mysql
+          property: database
+    
+  # Node.js application
+  - type: web
+    name: node-app
+    env: node
+    buildCommand: cd myform && npm install
+    startCommand: cd myform && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false  # Means you'll set this value manually in the Render dashboard
+      # Database connection environment variables
+      - key: MYSQL_HOST
+        fromService:
+          name: mysql
+          type: mysql
+          property: host
+      - key: MYSQL_PORT
+        fromService:
+          name: mysql
+          type: mysql
+          property: port
+      - key: MYSQL_USER
+        fromService:
+          name: mysql
+          type: mysql
+          property: user
+      - key: MYSQL_PASSWORD
+        fromService:
+          name: mysql
+          type: mysql
+          property: password
+      - key: MYSQL_DATABASE
+        fromService:
+          name: mysql
+          type: mysql
+          property: database
+
+databases:
+  - name: mysql
+    type: mysql
+    ipAllowList: []  # Allow connections from everywhere
+    plan: free  # Adjust to your needed plan: free, starter, etc.
+
+staticSites:
+  - name: static-assets
+    buildCommand: echo "No build needed for static assets"
+    publishDir: flask/static
+    pullRequestPreviewsEnabled: false

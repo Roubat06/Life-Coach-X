@@ -943,7 +943,7 @@ def cleanup_audio_cache():
 @app.route('/')
 def index():
     """Serve the main application page"""
-    return render_template('index.html')
+    return render_template('sound.html')
 
 
 
