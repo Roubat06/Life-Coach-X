@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Chat with Video</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <h1>Community Chat with Video Calls</h1>
+    
+    <div id="login-container">
+        <h3>Enter your details to join the chat</h3>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username-input">Username:</label>
+                <input type="text" id="username-input" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+                <label for="email-input">Email:</label>
+                <input type="email" id="email-input" placeholder="Your email" required>
+                <p class="error-message" id="email-error" style="display: none;">This email is already in use</p>
+            </div>
+            <button type="submit">Join Chat</button>
+        </form>
+    </div>
+    
+    <div id="main-content" style="display: none;">
+        <div class="container">
+            <div class="chat-section">
+                <h2>Text Chat</h2>
+                <div id="chat-container">
+                    <ul id="messages"></ul>
+                </div>
+                
+                <form id="message-form">
+                    <div class="message-input-container">
+                        <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off" required>
+                        <div class="file-upload-buttons">
+                            <label for="image-upload" class="file-upload-btn">
+                                <i class="fas fa-image"></i>
+                                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                            </label>
+                            <label for="video-upload" class="file-upload-btn">
+                                <i class="fas fa-video"></i>
+                                <input type="file" id="video-upload" accept="video/*" style="display: none;">
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+            
+            <div class="video-section">
+                <h2>Video Chat</h2>
+                <div id="video-grid">
+                    <div class="video-container">
+                        <video id="local-video" autoplay muted playsinline></video>
+                        <div class="user-label">You</div>
+                    </div>
+                </div>
+                
+                <div class="video-controls">
+                    <button class="video-control-btn mute-btn" id="toggle-audio">Mute</button>
+                    <button class="video-control-btn video-btn" id="toggle-video">Turn Off Video</button>
+                    <button class="video-control-btn end-call-btn" id="end-call" style="display: none;">End Call</button>
+                </div>
+                
+                <div class="online-users">
+                    <h3>Online Users</h3>
+                    <ul id="users-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Modal -->
+    <div id="request-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3 id="request-title"></h3>
+            <p id="request-message"></p>
+            <div class="request-buttons">
+                <button id="accept-request" class="accept-btn">Accept</button>
+                <button id="reject-request" class="reject-btn">Reject</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Private Chat Modal -->
+    <div id="private-chat-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="private-chat-header">
+                <h3 id="private-chat-title"></h3>
+                <button id="close-private-chat" class="close-btn">&times;</button>
+            </div>
+            <div id="private-chat-messages"></div>
+            <form id="private-message-form">
+                <div class="message-input-container">
+                    <input type="text" id="private-message-input" placeholder="Type your message..." required>
+                    <div class="file-upload-buttons">
+                        <label for="private-image-upload" class="file-upload-btn">
+                            <i class="fas fa-image"></i>
+                            <input type="file" id="private-image-upload" accept="image/*" style="display: none;">
+                        </label>
+                        <label for="private-video-upload" class="file-upload-btn">
+                            <i class="fas fa-video"></i>
+                            <input type="file" id="private-video-upload" accept="video/*" style="display: none;">
+                        </label>
+                    </div>
+                </div>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            const loginContainer = document.getElementById('login-container');
+            const mainContent = document.getElementById('main-content');
+            const messageForm = document.getElementById('message-form');
+            const messageInput = document.getElementById('message-input');
+            const messagesList = document.getElementById('messages');
+            const usersList = document.getElementById('users-list');
+            const localVideo = document.getElementById('local-video');
+            const videoGrid = document.getElementById('video-grid');
+            const toggleAudioBtn = document.getElementById('toggle-audio');
+            const toggleVideoBtn = document.getElementById('toggle-video');
+            const endCallBtn = document.getElementById('end-call');
+            const emailError = document.getElementById('email-error');
+            const requestModal = document.getElementById('request-modal');
+            const requestTitle = document.getElementById('request-title');
+            const requestMessage = document.getElementById('request-message');
+            const acceptRequestBtn = document.getElementById('accept-request');
+            const rejectRequestBtn = document.getElementById('reject-request');
+            const privateChatModal = document.getElementById('private-chat-modal');
+            const privateChatTitle = document.getElementById('private-chat-title');
+            const privateChatMessages = document.getElementById('private-chat-messages');
+            const privateMessageForm = document.getElementById('private-message-form');
+            const privateMessageInput = document.getElementById('private-message-input');
+            const closePrivateChatBtn = document.getElementById('close-private-chat');
+            const imageUpload = document.getElementById('image-upload');
+            const videoUpload = document.getElementById('video-upload');
+            const privateImageUpload = document.getElementById('private-image-upload');
+            const privateVideoUpload = document.getElementById('private-video-upload');
+            
+            let socket;
+            let username;
+            let email;
+            let localStream;
+            let peerConnections = {};
+            let currentPrivateChat = null;
+            let currentRequest = null;
+            
+            // WebRTC configuration
+            const iceServers = {
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' }
+                ]
+            };
+            
+            // Handle login submission
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                username = document.getElementById('username-input').value.trim();
+                email = document.getElementById('email-input').value.trim();
+                
+                if (username && email) {
+                    socket = io();
+                    socket.emit('check email', email);
+                    
+                    socket.on('email check result', (result) => {
+                        if (result.isAvailable) {
+                            setupApp();
+                        } else {
+                            emailError.style.display = 'block';
+                        }
+                    });
+                }
+            });
+            
+            function setupApp() {
+                setupSocketListeners();
+                loginContainer.style.display = 'none';
+                mainContent.style.display = 'block';
+                initializeWebRTC();
+                socket.emit('user join', { username, email });
+                messageInput.focus();
+
+                // Add message form submission handler
+                messageForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const message = messageInput.value.trim();
+                    
+                    if (message && socket) {
+                        socket.emit('chat message', {
+                            username: username,
+                            text: message
+                        });
+                        
+                        // Clear input field
+                        messageInput.value = '';
+                    }
+                });
+
+                // Setup file upload handlers
+                setupFileUploads();
+
+                // Add private message form submission handler
+                privateMessageForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const message = privateMessageInput.value.trim();
+                    
+                    if (message && currentPrivateChat) {
+                        // Send message to server
+                        socket.emit('private message', {
+                            chatId: currentPrivateChat,
+                            text: message
+                        });
+                        
+                        // Clear input field
+                        privateMessageInput.value = '';
+                    }
+                });
+
+                // Add close private chat button handler
+                closePrivateChatBtn.addEventListener('click', () => {
+                    closePrivateChat();
+                });
+            }
+            
+            function setupSocketListeners() {
+                // Public chat messages
+                socket.on('chat message', (data) => {
+                    console.log('Received message:', data); // Debug log
+                    if (data.type === 'text') {
+                        addMessage(data.username, data.text, data.username === username);
+                    } else if (data.type === 'image' || data.type === 'video') {
+                        addMessage(data.username, '', data.username === username, data.type, data.data);
+                    }
+                });
+                
+                // User join/leave notifications
+                socket.on('user join', (userData) => {
+                    addSystemMessage(`${userData.username} has joined the chat`);
+                    updateUsersList([...usersList.children].map(li => ({
+                        username: li.dataset.username,
+                        socketId: li.dataset.socketId
+                    })).concat([userData]));
+                });
+                
+                socket.on('user leave', (userData) => {
+                    addSystemMessage(`${userData.username} has left the chat`);
+                    if (peerConnections[userData.socketId]) {
+                        closePeerConnection(userData.socketId);
+                    }
+                    updateUsersList([...usersList.children]
+                        .filter(li => li.dataset.socketId !== userData.socketId)
+                        .map(li => ({
+                            username: li.dataset.username,
+                            socketId: li.dataset.socketId
+                        })));
+                });
+                
+                // Online users list
+                socket.on('online users', (users) => {
+                    updateUsersList(users);
+                });
+                
+                // Private chat requests
+                socket.on('private chat request', (data) => {
+                    showRequestModal(
+                        'Private Chat Request',
+                        `${data.fromUsername} wants to start a private chat with you`,
+                        () => {
+                            socket.emit('private chat accept', { target: data.from });
+                            currentPrivateChat = data.from;
+                            showPrivateChat(data.fromUsername);
+                        }
+                    );
+                });
+                
+                // Private chat established
+                socket.on('private chat established', (data) => {
+                    currentPrivateChat = data.chatId;
+                    showPrivateChat(data.participants.find(p => p !== socket.id));
+                });
+                
+                // Private messages
+                socket.on('private message', (data) => {
+                    if (data.chatId === currentPrivateChat) {
+                        addPrivateMessage(data.fromUsername, data.text, data.from === socket.id);
+                    }
+                });
+                
+                // Private chat ended
+                socket.on('private chat ended', (data) => {
+                    if (data.chatId === currentPrivateChat) {
+                        closePrivateChat();
+                    }
+                });
+                
+                // Video call requests
+                socket.on('video call request', (data) => {
+                    showRequestModal(
+                        'Video Call Request',
+                        `${data.fromUsername} wants to start a video call with you`,
+                        () => {
+                            socket.emit('video call response', {
+                                requestId: data.requestId,
+                                accepted: true
+                            });
+                            currentRequest = data.requestId;
+                        }
+                    );
+                });
+                
+                // Video call accepted
+                socket.on('video call accepted', (data) => {
+                    if (data.requestId === currentRequest) {
+                        startCall(data.participants.find(p => p !== socket.id));
+                    }
+                });
+                
+                // Video call rejected
+                socket.on('video call rejected', (data) => {
+                    if (data.requestId === currentRequest) {
+                        alert('Video call was rejected');
+                        currentRequest = null;
+                    }
+                });
+                
+                // Video call cancelled
+                socket.on('video call cancelled', (data) => {
+                    if (data.requestId === currentRequest) {
+                        endVideoCall();
+                        currentRequest = null;
+                    }
+                });
+                
+                // WebRTC signaling
+                socket.on('call offer', async (data) => {
+                    if (data.target === socket.id) {
+                        await handleCallOffer(data);
+                    }
+                });
+                
+                socket.on('call answer', async (data) => {
+                    if (data.target === socket.id) {
+                        await handleCallAnswer(data);
+                    }
+                });
+                
+                socket.on('ice candidate', (data) => {
+                    if (data.target === socket.id) {
+                        handleNewICECandidate(data);
+                    }
+                });
+                
+                socket.on('end call', (data) => {
+                    if (data.target === socket.id) {
+                        handleEndCall(data.from);
+                    }
+                });
+            }
+            
+            function updateUsersList(users) {
+                usersList.innerHTML = '';
+                users.forEach(user => {
+                    if (user.socketId !== socket.id) {
+                        const li = document.createElement('li');
+                        li.dataset.username = user.username;
+                        li.dataset.socketId = user.socketId;
+                        
+                        const userSpan = document.createElement('span');
+                        userSpan.textContent = user.username;
+                        li.appendChild(userSpan);
+                        
+                        const actionsDiv = document.createElement('div');
+                        actionsDiv.className = 'user-actions';
+                        
+                        const videoCallBtn = document.createElement('button');
+                        videoCallBtn.textContent = 'Video Call';
+                        videoCallBtn.onclick = () => initiateVideoCall(user.socketId);
+                        actionsDiv.appendChild(videoCallBtn);
+                        
+                        const privateChatBtn = document.createElement('button');
+                        privateChatBtn.textContent = 'Private Chat';
+                        privateChatBtn.onclick = () => initiatePrivateChat(user.socketId);
+                        actionsDiv.appendChild(privateChatBtn);
+                        
+                        li.appendChild(actionsDiv);
+                        usersList.appendChild(li);
+                    }
+                });
+            }
+            
+            function initiateVideoCall(targetId) {
+                socket.emit('video call request', { target: targetId });
+            }
+            
+            function initiatePrivateChat(targetId) {
+                socket.emit('private chat request', { target: targetId });
+            }
+            
+            function showRequestModal(title, message, onAccept) {
+                requestTitle.textContent = title;
+                requestMessage.textContent = message;
+                requestModal.style.display = 'block';
+                
+                acceptRequestBtn.onclick = () => {
+                    onAccept();
+                    requestModal.style.display = 'none';
+                };
+                
+                rejectRequestBtn.onclick = () => {
+                    if (currentRequest) {
+                        socket.emit('video call response', {
+                            requestId: currentRequest,
+                            accepted: false
+                        });
+                        currentRequest = null;
+                    }
+                    requestModal.style.display = 'none';
+                };
+            }
+            
+            function showPrivateChat(targetUsername) {
+                privateChatTitle.textContent = `Private Chat with ${targetUsername}`;
+                privateChatModal.style.display = 'block';
+                privateMessageInput.focus();
+                
+                // Clear previous messages
+                privateChatMessages.innerHTML = '';
+            }
+            
+            function closePrivateChat() {
+                if (currentPrivateChat) {
+                    // Notify server that we're leaving the private chat
+                    socket.emit('private chat leave', { chatId: currentPrivateChat });
+                }
+                privateChatModal.style.display = 'none';
+                privateChatMessages.innerHTML = '';
+                currentPrivateChat = null;
+            }
+            
+            function addPrivateMessage(sender, text, isSelf) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `private-message ${isSelf ? 'self' : ''}`;
+                messageDiv.textContent = `${isSelf ? 'You' : sender}: ${text}`;
+                addTimeStamp(messageDiv);
+                privateChatMessages.appendChild(messageDiv);
+                privateChatMessages.scrollTop = privateChatMessages.scrollHeight;
+            }
+            
+            function addSystemMessage(text) {
+                const item = document.createElement('li');
+                item.className = 'system-message';
+                item.textContent = text;
+                addTimeStamp(item);
+                messagesList.appendChild(item);
+                scrollToBottom();
+            }
+            
+            function addMessage(sender, text, isSelf, type = 'text', fileData = null) {
+                const item = document.createElement('li');
+                item.className = `message ${isSelf ? 'self' : ''}`;
+                
+                if (type === 'text') {
+                    item.textContent = `${isSelf ? 'You' : sender}: ${text}`;
+                } else if (type === 'image') {
+                    const img = document.createElement('img');
+                    img.src = fileData;
+                    img.className = 'chat-image';
+                    item.appendChild(img);
+                    const senderText = document.createElement('div');
+                    senderText.textContent = `${isSelf ? 'You' : sender}`;
+                    item.appendChild(senderText);
+                } else if (type === 'video') {
+                    const video = document.createElement('video');
+                    if (typeof fileData === 'string' && fileData.startsWith('data:')) {
+                        video.src = fileData;
+                    } else {
+                        video.src = URL.createObjectURL(new Blob([fileData], { type: 'video/mp4' }));
+                    }
+                    video.controls = true;
+                    video.className = 'chat-video';
+                    item.appendChild(video);
+                    const senderText = document.createElement('div');
+                    senderText.textContent = `${isSelf ? 'You' : sender}`;
+                    item.appendChild(senderText);
+                }
+                
+                addTimeStamp(item);
+                messagesList.appendChild(item);
+                scrollToBottom();
+            }
+            
+            function addTimeStamp(element) {
+                const now = new Date();
+                const timeStamp = document.createElement('span');
+                timeStamp.className = 'time-stamp';
+                timeStamp.textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                element.appendChild(timeStamp);
+            }
+            
+            function scrollToBottom() {
+                const chatContainer = document.getElementById('chat-container');
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+            
+            async function initializeWebRTC() {
+                try {
+                    // Get user media (camera and microphone)
+                    localStream = await navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: true
+                    });
+                    
+                    // Display local video stream
+                    localVideo.srcObject = localStream;
+                    
+                    // Setup media control listeners
+                    toggleAudioBtn.addEventListener('click', toggleAudio);
+                    toggleVideoBtn.addEventListener('click', toggleVideo);
+                    endCallBtn.addEventListener('click', endAllCalls);
+                    
+                } catch (error) {
+                    console.error('Error accessing media devices:', error);
+                    addMessage('System', 'Failed to access camera and microphone. Please check permissions.', false);
+                }
+            }
+            
+            function toggleAudio() {
+                const audioTracks = localStream.getAudioTracks();
+                if (audioTracks.length > 0) {
+                    const isEnabled = audioTracks[0].enabled;
+                    audioTracks[0].enabled = !isEnabled;
+                    toggleAudioBtn.textContent = isEnabled ? 'Unmute' : 'Mute';
+                    toggleAudioBtn.classList.toggle('mute-btn');
+                }
+            }
+            
+            function toggleVideo() {
+                const videoTracks = localStream.getVideoTracks();
+                if (videoTracks.length > 0) {
+                    const isEnabled = videoTracks[0].enabled;
+                    videoTracks[0].enabled = !isEnabled;
+                    toggleVideoBtn.textContent = isEnabled ? 'Turn On Video' : 'Turn Off Video';
+                    toggleVideoBtn.classList.toggle('video-btn');
+                }
+            }
+            
+            async function startCall(targetId) {
+                if (peerConnections[targetId]) {
+                    console.log('Already in a call with this user');
+                    return;
+                }
+                
+                // Create new RTCPeerConnection
+                const peerConnection = new RTCPeerConnection(iceServers);
+                peerConnections[targetId] = peerConnection;
+                
+                // Add local stream to peer connection
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
+                
+                // Handle ICE candidates
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        socket.emit('ice candidate', {
+                            target: targetId,
+                            candidate: event.candidate,
+                            from: socket.id
+                        });
+                    }
+                };
+                
+                // Handle remote stream
+                peerConnection.ontrack = (event) => {
+                    if (!document.getElementById(`remote-video-${targetId}`)) {
+                        createRemoteVideoElement(targetId, event.streams[0]);
+                    }
+                };
+                
+                // Create and send offer
+                try {
+                    const offer = await peerConnection.createOffer();
+                    await peerConnection.setLocalDescription(offer);
+                    
+                    socket.emit('call offer', {
+                        target: targetId,
+                        offer: offer,
+                        from: socket.id
+                    });
+                    
+                    // Update UI
+                    endCallBtn.style.display = 'inline-block';
+                    
+                } catch (error) {
+                    console.error('Error creating offer:', error);
+                    closePeerConnection(targetId);
+                }
+            }
+            
+            async function handleCallOffer(data) {
+                const { from, offer } = data;
+                
+                // Create new RTCPeerConnection if not exists
+                if (!peerConnections[from]) {
+                    const peerConnection = new RTCPeerConnection(iceServers);
+                    peerConnections[from] = peerConnection;
+                    
+                    // Add local stream to peer connection
+                    localStream.getTracks().forEach(track => {
+                        peerConnection.addTrack(track, localStream);
+                    });
+                    
+                    // Handle ICE candidates
+                    peerConnection.onicecandidate = (event) => {
+                        if (event.candidate) {
+                            socket.emit('ice candidate', {
+                                target: from,
+                                candidate: event.candidate,
+                                from: socket.id
+                            });
+                        }
+                    };
+                    
+                    // Handle remote stream
+                    peerConnection.ontrack = (event) => {
+                        if (!document.getElementById(`remote-video-${from}`)) {
+                            createRemoteVideoElement(from, event.streams[0]);
+                        }
+                    };
+                }
+                
+                // Process the offer and create answer
+                try {
+                    await peerConnections[from].setRemoteDescription(new RTCSessionDescription(offer));
+                    const answer = await peerConnections[from].createAnswer();
+                    await peerConnections[from].setLocalDescription(answer);
+                    
+                    socket.emit('call answer', {
+                        target: from,
+                        answer: answer,
+                        from: socket.id
+                    });
+                    
+                    // Update UI
+                    endCallBtn.style.display = 'inline-block';
+                    
+                } catch (error) {
+                    console.error('Error handling offer:', error);
+                    closePeerConnection(from);
+                }
+            }
+            
+            async function handleCallAnswer(data) {
+                const { from, answer } = data;
+                
+                try {
+                    if (peerConnections[from]) {
+                        await peerConnections[from].setRemoteDescription(new RTCSessionDescription(answer));
+                    }
+                } catch (error) {
+                    console.error('Error handling answer:', error);
+                    closePeerConnection(from);
+                }
+            }
+            
+            async function handleNewICECandidate(data) {
+                const { from, candidate } = data;
+                
+                try {
+                    if (peerConnections[from]) {
+                        await peerConnections[from].addIceCandidate(new RTCIceCandidate(candidate));
+                    }
+                } catch (error) {
+                    console.error('Error adding ICE candidate:', error);
+                }
+            }
+            
+            function createRemoteVideoElement(userId, stream) {
+                const videoContainer = document.createElement('div');
+                videoContainer.className = 'video-container';
+                videoContainer.id = `container-${userId}`;
+                
+                const video = document.createElement('video');
+                video.id = `remote-video-${userId}`;
+                video.autoplay = true;
+                video.playsInline = true;
+                video.srcObject = stream;
+                
+                videoContainer.appendChild(video);
+                videoGrid.appendChild(videoContainer);
+            }
+            
+            function endCall(userId) {
+                socket.emit('end call', {
+                    target: userId,
+                    from: socket.id
+                });
+                
+                closePeerConnection(userId);
+            }
+            
+            function endAllCalls() {
+                Object.keys(peerConnections).forEach(userId => {
+                    endCall(userId);
+                });
+                
+                endCallBtn.style.display = 'none';
+            }
+            
+            function handleEndCall(userId) {
+                closePeerConnection(userId);
+                
+                if (Object.keys(peerConnections).length === 0) {
+                    endCallBtn.style.display = 'none';
+                }
+            }
+            
+            function closePeerConnection(userId) {
+                if (peerConnections[userId]) {
+                    peerConnections[userId].close();
+                    delete peerConnections[userId];
+                }
+                
+                const videoContainer = document.getElementById(`container-${userId}`);
+                if (videoContainer) {
+                    videoGrid.removeChild(videoContainer);
+                }
+            }
+            
+            function setupFileUploads() {
+                // Community chat file uploads
+                imageUpload.addEventListener('change', (e) => handleFileUpload(e, 'image', false));
+                videoUpload.addEventListener('change', (e) => handleFileUpload(e, 'video', false));
+
+                // Private chat file uploads
+                privateImageUpload.addEventListener('change', (e) => handleFileUpload(e, 'image', true));
+                privateVideoUpload.addEventListener('change', (e) => handleFileUpload(e, 'video', true));
+            }
+
+            async function handleFileUpload(event, type, isPrivate) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                // Check file size (max 10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    return;
+                }
+
+                try {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const data = {
+                            type: type,
+                            data: e.target.result,
+                            filename: file.name,
+                            isPrivate: isPrivate
+                        };
+
+                        if (isPrivate) {
+                            data.chatId = currentPrivateChat;
+                        }
+
+                        socket.emit('file message', data);
+                    };
+
+                    if (type === 'image') {
+                        reader.readAsDataURL(file);
+                    } else {
+                        reader.readAsArrayBuffer(file);
+                    }
+                } catch (error) {
+                    console.error('Error reading file:', error);
+                    alert('Error uploading file');
+                }
+
+                // Reset the input
+                event.target.value = '';
+            }
+            
+            // Handle page unload
+            window.addEventListener('beforeunload', () => {
+                if (socket) {
+                    socket.disconnect();
+                }
+                
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                }
+            });
+        });
+    </script>
+</body>
+</html>

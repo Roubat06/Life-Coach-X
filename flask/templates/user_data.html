@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Fitness Assessment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f9c74f;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .assessment-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-section h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-large {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+        }
+        
+        #results {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .result-section {
+            margin-bottom: 30px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+        
+        .recommendation {
+            background-color: #e6f7ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .recommendation h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .assessment-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-indigo-600 shadow-lg">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="text-white font-bold text-2xl select-none">LifeCoachX</div>
+                <ul class="flex space-x-6 text-indigo-200 text-lg font-semibold">
+                    <li><a href="chatbot" class="hover:text-white transition-colors">Chat Bot</a></li>
+                    <li><a href="user_data" class="hover:text-white transition-colors">Health Reports</a></li>
+                    <li><a href="sound" class="hover:text-white transition-colors">Music</a></li>
+                    <li><a href="diet" class="hover:text-white transition-colors">Diet</a></li>
+                    <li><a href="workout" class="hover:text-white transition-colors">Workout</a></li>
+                    <li><a href="intake" class="hover:text-white transition-colors">Intake</a></li>
+                    <li><a href="http://localhost:3000/chat-app.html" class="hover:text-white transition-colors">Chat App</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <header>
+            <h1>Comprehensive Fitness Assessment</h1>
+            <p>Complete the questionnaire below to receive personalized health insights</p>
+        </header>
+        
+        <div class="assessment-form" id="assessmentForm">
+            <div class="form-section">
+                <h2>Personal Information</h2>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" class="form-control" required min="18" max="100">
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" class="form-control" required>
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="non-binary">Non-binary</option>
+                        <option value="prefer-not-to-say">Prefer not to say</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" class="form-control" required min="30" max="300" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="height">Height (cm)</label>
+                    <input type="number" id="height" class="form-control" required min="100" max="250">
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2>Lifestyle & Habits</h2>
+                <div class="form-group">
+                    <label>How would you describe your current activity level?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="activity1" name="activity" value="1" required>
+                            <label for="activity1">Sedentary (little to no exercise)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="activity2" name="activity" value="2">
+                            <label for="activity2">Lightly active (light exercise 1-3 days/week)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="activity3" name="activity" value="3">
+                            <label for="activity3">Moderately active (moderate exercise 3-5 days/week)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="activity4" name="activity" value="4">
+                            <label for="activity4">Very active (hard exercise 6-7 days/week)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="activity5" name="activity" value="5">
+                            <label for="activity5">Extremely active (professional athlete/physically demanding job)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>How many minutes of cardio exercise do you get per week?</label>
+                    <input type="number" id="cardioMinutes" class="form-control" required min="0" max="1000">
+                </div>
+                
+                <div class="form-group">
+                    <label>How many days per week do you engage in strength training?</label>
+                    <input type="number" id="strengthDays" class="form-control" required min="0" max="7">
+                </div>
+                
+                <div class="form-group">
+                    <label>How many hours of sleep do you get on average per night?</label>
+                    <input type="number" id="sleepHours" class="form-control" required min="3" max="12" step="0.5">
+                </div>
+                
+                <div class="form-group">
+                    <label>How would you rate your stress level on a scale of 1-10? (1 being very low, 10 being very high)</label>
+                    <input type="range" id="stressLevel" class="form-control" min="1" max="10" value="5" step="1">
+                    <output for="stressLevel" id="stressOutput">5</output>
+                </div>
+                
+                <div class="form-group">
+                    <label>How many glasses of water do you drink daily?</label>
+                    <input type="number" id="waterIntake" class="form-control" required min="0" max="20">
+                </div>
+                
+                <div class="form-group">
+                    <label>Do you smoke?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="smoke1" name="smoke" value="yes" required>
+                            <label for="smoke1">Yes</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="smoke2" name="smoke" value="occasionally">
+                            <label for="smoke2">Occasionally</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="smoke3" name="smoke" value="no">
+                            <label for="smoke3">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>How often do you consume alcohol?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="alcohol1" name="alcohol" value="daily" required>
+                            <label for="alcohol1">Daily</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="alcohol2" name="alcohol" value="weekly">
+                            <label for="alcohol2">Weekly</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="alcohol3" name="alcohol" value="monthly">
+                            <label for="alcohol3">Monthly</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="alcohol4" name="alcohol" value="rarely">
+                            <label for="alcohol4">Rarely</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="alcohol5" name="alcohol" value="never">
+                            <label for="alcohol5">Never</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2>Nutrition & Diet</h2>
+                <div class="form-group">
+                    <label>How many meals do you eat per day?</label>
+                    <input type="number" id="mealsPerDay" class="form-control" required min="1" max="10">
+                </div>
+                
+                <div class="form-group">
+                    <label>How many servings of fruits and vegetables do you consume daily?</label>
+                    <input type="number" id="fruitsVeggies" class="form-control" required min="0" max="15">
+                </div>
+                
+                <div class="form-group">
+                    <label>How many times per week do you eat processed foods?</label>
+                    <input type="number" id="processedFoods" class="form-control" required min="0" max="30">
+                </div>
+                
+                <div class="form-group">
+                    <label>How often do you eat out or order takeout?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="eatOut1" name="eatOut" value="daily" required>
+                            <label for="eatOut1">Daily</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="eatOut2" name="eatOut" value="several_times_week">
+                            <label for="eatOut2">Several times a week</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="eatOut3" name="eatOut" value="weekly">
+                            <label for="eatOut3">Weekly</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="eatOut4" name="eatOut" value="monthly">
+                            <label for="eatOut4">Monthly</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="eatOut5" name="eatOut" value="rarely">
+                            <label for="eatOut5">Rarely</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Do you follow any specific diet?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="diet1" name="diet" value="no_specific_diet" required>
+                            <label for="diet1">No specific diet</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="diet2" name="diet" value="vegetarian">
+                            <label for="diet2">Vegetarian</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="diet3" name="diet" value="vegan">
+                            <label for="diet3">Vegan</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="diet4" name="diet" value="keto">
+                            <label for="diet4">Keto</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="diet5" name="diet" value="paleo">
+                            <label for="diet5">Paleo</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="diet6" name="diet" value="mediterranean">
+                            <label for="diet6">Mediterranean</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="diet7" name="diet" value="other">
+                            <label for="diet7">Other</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>How many cups of caffeinated beverages do you consume daily?</label>
+                    <input type="number" id="caffeine" class="form-control" required min="0" max="10">
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2>Fitness Goals & Health Metrics</h2>
+                <div class="form-group">
+                    <label>What are your primary fitness goals? (Select all that apply)</label>
+                    <div class="form-group">
+                        <input type="checkbox" id="goal1" name="fitnessGoals" value="weight_loss">
+                        <label for="goal1">Weight loss</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="goal2" name="fitnessGoals" value="muscle_gain">
+                        <label for="goal2">Muscle gain</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="goal3" name="fitnessGoals" value="endurance">
+                        <label for="goal3">Endurance improvement</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="goal4" name="fitnessGoals" value="flexibility">
+                        <label for="goal4">Flexibility</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="goal5" name="fitnessGoals" value="general_health">
+                        <label for="goal5">General health maintenance</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="goal6" name="fitnessGoals" value="athletic_performance">
+                        <label for="goal6">Athletic performance</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Do you know your resting heart rate? (bpm)</label>
+                    <input type="number" id="restingHeartRate" class="form-control" min="40" max="200">
+                </div>
+                
+                <div class="form-group">
+                    <label>Do you know your blood pressure? (systolic/diastolic)</label>
+                    <div class="input-group">
+                        <input type="number" id="systolic" class="form-control" placeholder="Systolic" min="80" max="200">
+                        <span>/</span>
+                        <input type="number" id="diastolic" class="form-control" placeholder="Diastolic" min="40" max="120">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="medicalConditions">Do you have any medical conditions or diseases? (Optional)</label>
+                    <textarea id="medicalConditions" class="form-control" rows="3" placeholder="E.g., diabetes, hypertension, asthma..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>How would you rate your current fitness level?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="fitness1" name="fitness" value="1" required>
+                            <label for="fitness1">1 - Poor</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="fitness2" name="fitness" value="2">
+                            <label for="fitness2">2 - Below Average</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="fitness3" name="fitness" value="3">
+                            <label for="fitness3">3 - Average</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="fitness4" name="fitness" value="4">
+                            <label for="fitness4">4 - Good</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="fitness5" name="fitness" value="5">
+                            <label for="fitness5">5 - Excellent</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>How many push-ups can you do in one set?</label>
+                    <input type="number" id="pushUps" class="form-control" required min="0" max="200">
+                </div>
+                
+                <div class="form-group">
+                    <label>How long can you hold a plank? (seconds)</label>
+                    <input type="number" id="plankTime" class="form-control" required min="0" max="600">
+                </div>
+
+                <div class="form-group">
+                    <label>Have you experienced any injuries in the past year that affect your workouts?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="injuries1" name="injuries" value="yes" required>
+                            <label for="injuries1">Yes</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="injuries2" name="injuries" value="no">
+                            <label for="injuries2">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>If you have to climb 5 flights of stairs, how do you feel afterward?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="stairs1" name="stairs" value="not_winded" required>
+                            <label for="stairs1">Not winded at all</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="stairs2" name="stairs" value="slightly_winded">
+                            <label for="stairs2">Slightly winded</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="stairs3" name="stairs" value="moderately_winded">
+                            <label for="stairs3">Moderately winded</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="stairs4" name="stairs" value="very_winded">
+                            <label for="stairs4">Very winded</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="stairs5" name="stairs" value="extremely_winded">
+                            <label for="stairs5">Extremely winded</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" id="submitAssessment" class="btn btn-large">Submit Assessment</button>
+        </div>
+        
+        <div id="results">
+            <div class="result-header">
+                <h2>Your Fitness Assessment Results</h2>
+                <p>Based on the information you provided, here's a detailed analysis of your fitness status:</p>
+            </div>
+            
+            <div class="result-section">
+                <h3>Body Composition</h3>
+                <div class="chart-container">
+                    <canvas id="bmiChart"></canvas>
+                </div>
+                <div id="bmiAnalysis"></div>
+            </div>
+            
+            <div class="result-section">
+                <h3>Fitness Level Comparison</h3>
+                <div class="chart-container">
+                    <canvas id="fitnessRadarChart"></canvas>
+                </div>
+                <div id="fitnessAnalysis"></div>
+            </div>
+            
+            <div class="result-section">
+                <h3>Health Risk Assessment</h3>
+                <div class="chart-container">
+                    <canvas id="healthRiskChart"></canvas>
+                </div>
+                <div id="healthRiskAnalysis"></div>
+            </div>
+            
+            <div class="result-section">
+                <h3>Nutrition Breakdown</h3>
+                <div class="chart-container">
+                    <canvas id="nutritionChart"></canvas>
+                </div>
+                <div id="nutritionAnalysis"></div>
+            </div>
+            
+            <div class="result-section">
+                <h3>Lifestyle Habits Comparison</h3>
+                <div class="chart-container">
+                    <canvas id="lifestyleChart"></canvas>
+                </div>
+                <div id="lifestyleAnalysis"></div>
+            </div>
+            
+            <div class="result-section">
+                <h3>Fitness Progress Timeline</h3>
+                <div class="chart-container">
+                    <canvas id="progressChart"></canvas>
+                </div>
+                <div id="progressAnalysis"></div>
+            </div>
+            
+            <div class="result-section">
+                <h3>Personalized Recommendations</h3>
+                <div id="recommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update stress level output
+        document.getElementById('stressLevel').addEventListener('input', function() {
+            document.getElementById('stressOutput').textContent = this.value;
+        });
+        
+        // Handle form submission
+        document.getElementById('submitAssessment').addEventListener('click', function() {
+            // Basic form validation
+            const requiredFields = document.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    isValid = false;
+                    field.style.borderColor = 'red';
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+            
+            if (!isValid) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Collect form data
+            const formData = {
+                personalInfo: {
+                    name: document.getElementById('name').value,
+                    age: parseInt(document.getElementById('age').value),
+                    gender: document.getElementById('gender').value,
+                    weight: parseFloat(document.getElementById('weight').value),
+                    height: parseFloat(document.getElementById('height').value)
+                },
+                lifestyle: {
+                    activity: document.querySelector('input[name="activity"]:checked').value,
+                    cardioMinutes: parseInt(document.getElementById('cardioMinutes').value),
+                    strengthDays: parseInt(document.getElementById('strengthDays').value),
+                    sleepHours: parseFloat(document.getElementById('sleepHours').value),
+                    stressLevel: parseInt(document.getElementById('stressLevel').value),
+                    waterIntake: parseInt(document.getElementById('waterIntake').value),
+                    smoke: document.querySelector('input[name="smoke"]:checked').value,
+                    alcohol: document.querySelector('input[name="alcohol"]:checked').value
+                },
+                nutrition: {
+                    mealsPerDay: parseInt(document.getElementById('mealsPerDay').value),
+                    fruitsVeggies: parseInt(document.getElementById('fruitsVeggies').value),
+                    processedFoods: parseInt(document.getElementById('processedFoods').value),
+                    eatOut: document.querySelector('input[name="eatOut"]:checked').value,
+                    diet: document.querySelector('input[name="diet"]:checked').value,
+                    caffeine: parseInt(document.getElementById('caffeine').value)
+                },
+                fitness: {
+                    goals: Array.from(document.querySelectorAll('input[name="fitnessGoals"]:checked')).map(checkbox => checkbox.value),
+                    restingHeartRate: document.getElementById('restingHeartRate').value ? parseInt(document.getElementById('restingHeartRate').value) : null,
+                    bloodPressure: {
+                        systolic: document.getElementById('systolic').value ? parseInt(document.getElementById('systolic').value) : null,
+                        diastolic: document.getElementById('diastolic').value ? parseInt(document.getElementById('diastolic').value) : null
+                    },
+                    medicalConditions: document.getElementById('medicalConditions').value,
+                    fitnessLevel: document.querySelector('input[name="fitness"]:checked').value,
+                    pushUps: parseInt(document.getElementById('pushUps').value),
+                    plankTime: parseInt(document.getElementById('plankTime').value),
+                    injuries: document.querySelector('input[name="injuries"]:checked').value,
+                    stairs: document.querySelector('input[name="stairs"]:checked').value
+                }
+            };
+            
+            // Process data (Mock AI processing)
+            processFormData(formData);
+        });
+        
+        function processFormData(data) {
+            // This function simulates AI processing with Gemini 2.0 Flash
+            // In a real application, you would send this data to a backend that interfaces with the AI
+            
+            // Calculate BMI
+            const bmi = calculateBMI(data.personalInfo.weight, data.personalInfo.height);
+            
+            // Analyze fitness level
+            const fitnessScore = analyzeGeneralFitness(data);
+            
+            // Analyze health risks
+            const healthRisks = analyzeHealthRisks(data);
+            
+            // Generate recommendations
+            const recommendations = generateRecommendations(data, bmi, fitnessScore, healthRisks);
+            
+            // Display results
+            displayResults(data, bmi, fitnessScore, healthRisks, recommendations);
+        }
+        
+        function calculateBMI(weight, height) {
+            // Weight in kg, height in cm
+            const heightInMeters = height / 100;
+            return weight / (heightInMeters * heightInMeters);
+        }
+        
+        function analyzeGeneralFitness(data) {
+            // Calculate fitness score based on various factors (0-100)
+            let score = 0;
+            
+            // Activity level contribution (0-20)
+            const activityMap = { '1': 4, '2': 8, '3': 12, '4': 16, '5': 20 };
+            score += activityMap[data.lifestyle.activity];
+            
+            // Cardio minutes contribution (0-15)
+            if (data.lifestyle.cardioMinutes < 30) score += 3;
+            else if (data.lifestyle.cardioMinutes < 75) score += 6;
+            else if (data.lifestyle.cardioMinutes < 150) score += 9;
+            else if (data.lifestyle.cardioMinutes < 225) score += 12;
+            else score += 15;
+            
+            // Strength training contribution (0-15)
+            score += Math.min(data.lifestyle.strengthDays * 3, 15);
+            
+            // Sleep quality contribution (0-10)
+            if (data.lifestyle.sleepHours < 5) score += 2;
+            else if (data.lifestyle.sleepHours < 6) score += 4;
+            else if (data.lifestyle.sleepHours < 7) score += 6;
+            else if (data.lifestyle.sleepHours < 8) score += 8;
+            else score += 10;
+            
+            // Stress level contribution (0-10) - lower is better
+            score += 10 - data.lifestyle.stressLevel;
+            
+            // Nutrition contribution (0-10)
+            let nutritionScore = 0;
+            nutritionScore += Math.min(data.nutrition.fruitsVeggies, 5);
+            nutritionScore -= Math.min(Math.floor(data.nutrition.processedFoods / 5), 5);
+            score += Math.max(0, nutritionScore);
+            
+            // Self-assessment (0-10)
+            score += parseInt(data.fitness.fitnessLevel) * 2;
+            
+            // Endurance indicators (0-10)
+            const stairsMap = {
+                'not_winded': 10,
+                'slightly_winded': 8,
+                'moderately_winded': 6,
+                'very_winded': 3,
+                'extremely_winded': 0
+            };
+            score += stairsMap[data.fitness.stairs];
+            // Strength indicators (push-ups) (0-10)
+            let pushUpScore = 0;
+            const gender = data.personalInfo.gender;
+            const age = data.personalInfo.age;
+            const pushUps = data.fitness.pushUps;
+            
+            if (gender === 'male') {
+                if (age < 30) {
+                    if (pushUps < 10) pushUpScore = 2;
+                    else if (pushUps < 25) pushUpScore = 4;
+                    else if (pushUps < 40) pushUpScore = 6;
+                    else if (pushUps < 55) pushUpScore = 8;
+                    else pushUpScore = 10;
+                } else if (age < 50) {
+                    if (pushUps < 5) pushUpScore = 2;
+                    else if (pushUps < 20) pushUpScore = 4;
+                    else if (pushUps < 30) pushUpScore = 6;
+                    else if (pushUps < 45) pushUpScore = 8;
+                    else pushUpScore = 10;
+                } else {
+                    if (pushUps < 3) pushUpScore = 2;
+                    else if (pushUps < 15) pushUpScore = 4;
+                    else if (pushUps < 25) pushUpScore = 6;
+                    else if (pushUps < 35) pushUpScore = 8;
+                    else pushUpScore = 10;
+                }
+            } else {
+                if (age < 30) {
+                    if (pushUps < 5) pushUpScore = 2;
+                    else if (pushUps < 15) pushUpScore = 4;
+                    else if (pushUps < 25) pushUpScore = 6;
+                    else if (pushUps < 40) pushUpScore = 8;
+                    else pushUpScore = 10;
+                } else if (age < 50) {
+                    if (pushUps < 3) pushUpScore = 2;
+                    else if (pushUps < 10) pushUpScore = 4;
+                    else if (pushUps < 20) pushUpScore = 6;
+                    else if (pushUps < 30) pushUpScore = 8;
+                    else pushUpScore = 10;
+                } else {
+                    if (pushUps < 2) pushUpScore = 2;
+                    else if (pushUps < 8) pushUpScore = 4;
+                    else if (pushUps < 15) pushUpScore = 6;
+                    else if (pushUps < 25) pushUpScore = 8;
+                    else pushUpScore = 10;
+                }
+            }
+            score += pushUpScore;
+            
+            return score;
+        }
+        
+        function analyzeHealthRisks(data) {
+            const healthRisks = {
+                cardiovascular: 0,
+                musculoskeletal: 0,
+                metabolic: 0,
+                stress: 0,
+                overall: 0
+            };
+            
+            // Cardiovascular risk factors
+            if (data.lifestyle.smoke === 'yes') healthRisks.cardiovascular += 20;
+            else if (data.lifestyle.smoke === 'occasionally') healthRisks.cardiovascular += 10;
+            
+            if (data.lifestyle.alcohol === 'daily') healthRisks.cardiovascular += 15;
+            else if (data.lifestyle.alcohol === 'weekly') healthRisks.cardiovascular += 8;
+            else if (data.lifestyle.alcohol === 'monthly') healthRisks.cardiovascular += 3;
+            
+            if (data.lifestyle.activity === '1') healthRisks.cardiovascular += 15;
+            else if (data.lifestyle.activity === '2') healthRisks.cardiovascular += 10;
+            
+            if (data.lifestyle.cardioMinutes < 30) healthRisks.cardiovascular += 10;
+            
+            if (data.fitness.bloodPressure.systolic && data.fitness.bloodPressure.systolic > 140) {
+                healthRisks.cardiovascular += 15;
+            }
+            
+            // Musculoskeletal risk factors
+            if (data.fitness.injuries === 'yes') healthRisks.musculoskeletal += 15;
+            
+            if (data.fitness.pushUps < 5 || data.fitness.plankTime < 20) {
+                healthRisks.musculoskeletal += 10;
+            }
+            
+            if (data.lifestyle.strengthDays < 2) healthRisks.musculoskeletal += 10;
+            
+            // Metabolic risk factors
+            const bmi = calculateBMI(data.personalInfo.weight, data.personalInfo.height);
+            if (bmi > 30) healthRisks.metabolic += 20;
+            else if (bmi > 25) healthRisks.metabolic += 10;
+            
+            if (data.nutrition.processedFoods > 10) healthRisks.metabolic += 15;
+            
+            if (data.nutrition.fruitsVeggies < 3) healthRisks.metabolic += 10;
+            
+            // Stress-related risk factors
+            if (data.lifestyle.stressLevel > 7) healthRisks.stress += 20;
+            else if (data.lifestyle.stressLevel > 5) healthRisks.stress += 10;
+            
+            if (data.lifestyle.sleepHours < 6) healthRisks.stress += 15;
+            else if (data.lifestyle.sleepHours < 7) healthRisks.stress += 8;
+            
+            // Calculate overall risk
+            healthRisks.overall = Math.round(
+                (healthRisks.cardiovascular + healthRisks.musculoskeletal + 
+                 healthRisks.metabolic + healthRisks.stress) / 4
+            );
+            
+            // Check for medical conditions
+            if (data.fitness.medicalConditions) {
+                const conditions = data.fitness.medicalConditions.toLowerCase();
+                
+                if (conditions.includes('diabetes')) healthRisks.metabolic += 15;
+                if (conditions.includes('hypertension') || conditions.includes('high blood pressure')) healthRisks.cardiovascular += 15;
+                if (conditions.includes('heart') || conditions.includes('cardiac')) healthRisks.cardiovascular += 20;
+                if (conditions.includes('arthritis') || conditions.includes('joint')) healthRisks.musculoskeletal += 15;
+                if (conditions.includes('depression') || conditions.includes('anxiety')) healthRisks.stress += 15;
+            }
+            
+            // Cap values at 100
+            for (let key in healthRisks) {
+                healthRisks[key] = Math.min(healthRisks[key], 100);
+            }
+            
+            return healthRisks;
+        }
+        
+        function generateRecommendations(data, bmi, fitnessScore, healthRisks) {
+            const recommendations = {
+                exercise: [],
+                nutrition: [],
+                lifestyle: [],
+                specialized: []
+            };
+            
+            // Exercise recommendations
+            if (data.lifestyle.cardioMinutes < 150) {
+                recommendations.exercise.push('Gradually increase cardio exercise to at least 150 minutes per week of moderate activity or 75 minutes of vigorous activity.');
+            }
+            
+            if (data.lifestyle.strengthDays < 2) {
+                recommendations.exercise.push('Add at least 2 days per week of strength training that works all major muscle groups.');
+            }
+            
+            if (data.fitness.plankTime < 60) {
+                recommendations.exercise.push('Include core strengthening exercises to improve your plank time to at least 60 seconds.');
+            }
+            
+            // Specialized exercise recommendations based on goals
+            if (data.fitness.goals.includes('weight_loss')) {
+                recommendations.exercise.push('For weight loss: Create a calorie deficit through a combination of diet and exercise. Add 30-45 minutes of moderate-intensity cardio 4-5 days/week.');
+            }
+            
+            if (data.fitness.goals.includes('muscle_gain')) {
+                recommendations.exercise.push('For muscle gain: Focus on progressive overload in resistance training, ensuring adequate protein intake and recovery between workouts.');
+            }
+            
+            if (data.fitness.goals.includes('endurance')) {
+                recommendations.exercise.push('For endurance improvement: Incorporate longer duration cardio sessions and interval training to build cardiovascular capacity.');
+            }
+            
+            if (data.fitness.goals.includes('flexibility')) {
+                recommendations.exercise.push('For flexibility: Add daily stretching routines and consider yoga or Pilates sessions 2-3 times per week.');
+            }
+            
+            // Nutrition recommendations
+            if (data.nutrition.fruitsVeggies < 5) {
+                recommendations.nutrition.push('Increase fruit and vegetable intake to at least 5 servings per day for better nutrition and digestive health.');
+            }
+            
+            if (data.nutrition.processedFoods > 7) {
+                recommendations.nutrition.push('Reduce processed food consumption by replacing with whole foods for better overall health.');
+            }
+            
+            if (data.nutrition.waterIntake < 8) {
+                recommendations.nutrition.push('Increase water intake to at least 8 glasses per day to support optimal hydration and bodily functions.');
+            }
+            
+            if (bmi > 25) {
+                recommendations.nutrition.push('Consider working with a nutritionist to create a balanced meal plan that supports weight management.');
+            }
+            
+            // Lifestyle recommendations
+            if (data.lifestyle.sleepHours < 7) {
+                recommendations.lifestyle.push('Prioritize sleep by aiming for 7-9 hours per night, which supports recovery, hormonal balance, and overall health.');
+            }
+            
+            if (data.lifestyle.stressLevel > 6) {
+                recommendations.lifestyle.push('Implement stress management techniques such as meditation, deep breathing, or mindfulness practices.');
+            }
+            
+            if (data.lifestyle.smoke !== 'no') {
+                recommendations.lifestyle.push('Consider a smoking cessation program to improve cardiovascular health and overall wellbeing.');
+            }
+            
+            if (data.lifestyle.alcohol === 'daily') {
+                recommendations.lifestyle.push('Reduce alcohol consumption to moderate levels (max 1 drink/day for women, 2 for men) or consider cutting out alcohol completely.');
+            }
+            
+            // Medical condition-specific recommendations
+            if (data.fitness.medicalConditions) {
+                recommendations.specialized.push('Consult with healthcare providers before starting any new exercise program, particularly given your medical condition(s).');
+                
+                const conditions = data.fitness.medicalConditions.toLowerCase();
+                
+                if (conditions.includes('diabetes')) {
+                    recommendations.specialized.push('For diabetes management: Monitor blood glucose before and after exercise. Consider working with a certified diabetes educator for personalized guidance.');
+                }
+                
+                if (conditions.includes('hypertension') || conditions.includes('high blood pressure')) {
+                    recommendations.specialized.push('For hypertension management: Prioritize regular aerobic exercise, reduce sodium intake, and maintain consistent monitoring of blood pressure.');
+                }
+                
+                if (conditions.includes('heart') || conditions.includes('cardiac')) {
+                    recommendations.specialized.push('For heart conditions: Follow cardiac rehabilitation guidelines and exercise within heart rate parameters set by your cardiologist.');
+                }
+                
+                if (conditions.includes('arthritis') || conditions.includes('joint')) {
+                    recommendations.specialized.push('For joint issues: Include low-impact exercises like swimming or cycling, and focus on maintaining range of motion through appropriate stretching.');
+                }
+            }
+            
+            return recommendations;
+        }
+        
+        function displayResults(data, bmi, fitnessScore, healthRisks, recommendations) {
+            // Hide the form and show results
+            document.getElementById('assessmentForm').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            // Create BMI chart
+            createBMIChart(bmi);
+            
+            // Create fitness radar chart
+            createFitnessRadarChart(data, fitnessScore);
+            
+            // Create health risk chart
+            createHealthRiskChart(healthRisks);
+            
+            // Create nutrition chart
+            createNutritionChart(data);
+            
+            // Create lifestyle chart
+            createLifestyleChart(data);
+            
+            // Create progress chart
+            createProgressChart(data);
+            
+            // Display BMI analysis
+            displayBMIAnalysis(bmi);
+            
+            // Display fitness analysis
+            displayFitnessAnalysis(fitnessScore);
+            
+            // Display health risk analysis
+            displayHealthRiskAnalysis(healthRisks, data);
+            
+            // Display recommendations
+            displayRecommendations(recommendations);
+        }
+        
+        function createBMIChart(bmi) {
+            const ctx = document.getElementById('bmiChart').getContext('2d');
+            
+            // BMI categories
+            const categories = ['Underweight', 'Normal', 'Overweight', 'Obese'];
+            const ranges = ['< 18.5', '18.5 - 24.9', '25 - 29.9', '≥ 30'];
+            
+            // Determine BMI category
+            let userCategory;
+            if (bmi < 18.5) userCategory = 'Underweight';
+            else if (bmi < 25) userCategory = 'Normal';
+            else if (bmi < 30) userCategory = 'Overweight';
+            else userCategory = 'Obese';
+            
+            // Average BMI data
+            const averageBMI = 26.5; // Global average BMI
+            
+            // Create data for the chart
+            const data = {
+                labels: categories,
+                datasets: [
+                    {
+                        label: 'Your BMI',
+                        data: categories.map(category => category === userCategory ? bmi : null),
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Global Average BMI',
+                        data: categories.map(category => {
+                            if (category === 'Overweight') return averageBMI;
+                            return null;
+                        }),
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            };
+            
+            // Chart options
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'BMI Value'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'BMI Category'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const dataIndex = context.dataIndex;
+                                const label = context.dataset.label;
+                                const value = context.raw;
+                                const range = ranges[dataIndex];
+                                return `${label}: ${value} (Range: ${range})`;
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Your BMI Compared to Global Average',
+                        font: {
+                            size: 18
+                        }
+                    }
+                }
+            };
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: options
+            });
+        }
+        
+        function createFitnessRadarChart(data, fitnessScore) {
+            const ctx = document.getElementById('fitnessRadarChart').getContext('2d');
+            
+            // Parse user data to extract fitness components
+            const cardiovascularScore = Math.min(100, data.lifestyle.cardioMinutes / 3);
+            
+            const strengthScore = Math.min(100, (data.lifestyle.strengthDays * 15) + 
+                                          (data.fitness.pushUps * 0.5) + 
+                                          (data.fitness.plankTime * 0.1));
+            
+            const enduranceScore = data.fitness.stairs === 'not_winded' ? 90 :
+                               data.fitness.stairs === 'slightly_winded' ? 70 :
+                               data.fitness.stairs === 'moderately_winded' ? 50 :
+                               data.fitness.stairs === 'very_winded' ? 30 : 10;
+            
+            const flexibilityScore = 50; // Default as we don't have direct measurements
+            
+            const nutritionScore = Math.min(100, (data.nutrition.fruitsVeggies * 10) - 
+                                         (data.nutrition.processedFoods * 2) + 
+                                         (data.lifestyle.waterIntake * 5));
+            
+            // Generate age-based average data
+            const age = data.personalInfo.age;
+            let ageGroup;
+            
+            if (age < 30) ageGroup = '20s';
+            else if (age < 40) ageGroup = '30s';
+            else if (age < 50) ageGroup = '40s';
+            else if (age < 60) ageGroup = '50s';
+            else ageGroup = '60+';
+            
+            // Average fitness data by age group (approximated values)
+            const averageData = {
+                '20s': {
+                    cardiovascular: 70,
+                    strength: 65,
+                    endurance: 75,
+                    flexibility: 60,
+                    nutrition: 55
+                },
+                '30s': {
+                    cardiovascular: 65,
+                    strength: 60,
+                    endurance: 65,
+                    flexibility: 55,
+                    nutrition: 60
+                },
+                '40s': {
+                    cardiovascular: 55,
+                    strength: 50,
+                    endurance: 55,
+                    flexibility: 50,
+                    nutrition: 65
+                },
+                '50s': {
+                    cardiovascular: 45,
+                    strength: 40,
+                    endurance: 45,
+                    flexibility: 45,
+                    nutrition: 70
+                },
+                '60+': {
+                    cardiovascular: 35,
+                    strength: 30,
+                    endurance: 35,
+                    flexibility: 40,
+                    nutrition: 75
+                }
+            };
+            
+            // Create data for the chart
+            const chartData = {
+                labels: [
+                    'Cardiovascular Fitness',
+                    'Strength',
+                    'Endurance',
+                    'Flexibility',
+                    'Nutrition'
+                ],
+                datasets: [
+                    {
+                        label: 'Your Fitness Profile',
+                        data: [
+                            cardiovascularScore,
+                            strengthScore,
+                            enduranceScore,
+                            flexibilityScore,
+                            nutritionScore
+                        ],
+                        fill: true,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(54, 162, 235)'
+                    },
+                    {
+                        label: `Average for ${ageGroup} Age Group`,
+                        data: [
+                            averageData[ageGroup].cardiovascular,
+                            averageData[ageGroup].strength,
+                            averageData[ageGroup].endurance,
+                            averageData[ageGroup].flexibility,
+                            averageData[ageGroup].nutrition
+                        ],
+                        fill: true,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        pointBackgroundColor: 'rgb(255, 99, 132)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(255, 99, 132)'
+                    }
+                ]
+            };
+            
+            // Chart options
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Your Fitness Profile vs. Average ${ageGroup} Age Group`,
+                        font: {
+                            size: 18
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                }
+            };
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: chartData,
+                options: options
+            });
+        }
+        
+        function createHealthRiskChart(healthRisks) {
+            const ctx = document.getElementById('healthRiskChart').getContext('2d');
+            
+            // Create data for the chart
+            const data = {
+                labels: ['Cardiovascular', 'Musculoskeletal', 'Metabolic', 'Stress'],
+                datasets: [
+                    {
+                        label: 'Your Health Risk Factors',
+                        data: [
+                            healthRisks.cardiovascular,
+                            healthRisks.musculoskeletal,
+                            healthRisks.metabolic,
+                            healthRisks.stress
+                        ],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }
+                ]
+            };
+            
+            // Chart options
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Risk Level (%)'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Health Risk Assessment',
+                        font: {
+                            size: 18
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                let riskLevel;
+                                
+                                if (value < 20) riskLevel = 'Low Risk';
+                                else if (value < 40) riskLevel = 'Moderate-Low Risk';
+                                else if (value < 60) riskLevel = 'Moderate Risk';
+                                else if (value < 80) riskLevel = 'Moderate-High Risk';
+                                else riskLevel = 'High Risk';
+                                
+                                return `${context.dataset.label}: ${value}% (${riskLevel})`;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: options
+            });
+        }
+        
+        function createNutritionChart(data) {
+            const ctx = document.getElementById('nutritionChart').getContext('2d');
+            
+            // Calculate nutrition scores
+            const fruitsVeggiesScore = Math.min(100, data.nutrition.fruitsVeggies * 20);
+            const processedFoodsScore = Math.max(0, 100 - (data.nutrition.processedFoods * 10));
+            const waterIntakeScore = Math.min(100, data.nutrition.waterIntake * 12.5);
+            
+            // Create data for the chart
+            const chartData = {
+                labels: ['Fruits & Vegetables', 'Processed Foods', 'Water Intake'],
+                datasets: [{
+                    data: [fruitsVeggiesScore, processedFoodsScore, waterIntakeScore],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            
+            // Chart options
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Nutrition Score Breakdown',
+                        font: {
+                            size: 18
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                let status;
+                                
+                                if (value >= 80) status = 'Excellent';
+                                else if (value >= 60) status = 'Good';
+                                else if (value >= 40) status = 'Fair';
+                                else status = 'Needs Improvement';
+                                
+                                return `${context.label}: ${value}% (${status})`;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            new Chart(ctx, {
+                type: 'pie',
+                data: chartData,
+                options: options
+            });
+        }
+        
+        function createLifestyleChart(data) {
+            const ctx = document.getElementById('lifestyleChart').getContext('2d');
+            
+            // Calculate lifestyle scores
+            const sleepScore = Math.min(100, (data.lifestyle.sleepHours / 8) * 100);
+            const stressScore = Math.max(0, 100 - (data.lifestyle.stressLevel * 10));
+            const activityScore = Math.min(100, (data.lifestyle.activity / 5) * 100);
+            const cardioScore = Math.min(100, (data.lifestyle.cardioMinutes / 150) * 100);
+            const strengthScore = Math.min(100, (data.lifestyle.strengthDays / 3) * 100);
+            
+            // Create data for the chart
+            const chartData = {
+                labels: ['Sleep Quality', 'Stress Management', 'Activity Level', 'Cardio Exercise', 'Strength Training'],
+                datasets: [{
+                    label: 'Your Score',
+                    data: [sleepScore, stressScore, activityScore, cardioScore, strengthScore],
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Recommended',
+                    data: [80, 70, 80, 80, 80],
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            };
+            
+            // Chart options
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Score (%)'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Lifestyle Habits Comparison',
+                        font: {
+                            size: 18
+                        }
+                    }
+                }
+            };
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: options
+            });
+        }
+        
+        function createProgressChart(data) {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            // Generate mock progress data (in a real app, this would come from historical data)
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+            const currentMonth = new Date().getMonth();
+            const progressData = {
+                bmi: Array(6).fill(null).map((_, i) => {
+                    if (i > currentMonth) return null;
+                    const bmi = calculateBMI(data.personalInfo.weight, data.personalInfo.height);
+                    return bmi - (i * 0.2); // Simulate gradual improvement
+                }),
+                cardio: Array(6).fill(null).map((_, i) => {
+                    if (i > currentMonth) return null;
+                    return Math.min(100, (data.lifestyle.cardioMinutes / 150) * 100 + (i * 5));
+                }),
+                strength: Array(6).fill(null).map((_, i) => {
+                    if (i > currentMonth) return null;
+                    return Math.min(100, (data.lifestyle.strengthDays / 3) * 100 + (i * 5));
+                })
+            };
+            
+            // Create data for the chart
+            const chartData = {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'BMI Progress',
+                        data: progressData.bmi,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Cardio Progress',
+                        data: progressData.cardio,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Strength Progress',
+                        data: progressData.strength,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4
+                    }
+                ]
+            };
+            
+            // Chart options
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Progress Score'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '6-Month Fitness Progress Timeline',
+                        font: {
+                            size: 18
+                        }
+                    }
+                }
+            };
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: options
+            });
+        }
+        
+        function displayBMIAnalysis(bmi) {
+            const bmiAnalysisElement = document.getElementById('bmiAnalysis');
+            let category, healthImplications, recommendation;
+            
+            if (bmi < 18.5) {
+                category = 'Underweight';
+                healthImplications = 'Being underweight can cause nutritional deficiencies, weakened immune system, and in women, potential fertility issues.';
+                recommendation = 'Consider consulting with a nutritionist to develop a healthy weight gain plan that includes nutrient-dense foods and appropriate strength training.';
+            } else if (bmi < 25) {
+                category = 'Normal Weight';
+                healthImplications = 'Maintaining a normal weight is associated with lower risk of chronic diseases like heart disease, diabetes, and certain cancers.';
+                recommendation = 'Continue with your current healthy habits, focusing on balanced nutrition and regular physical activity to maintain your weight.';
+            } else if (bmi < 30) {
+                category = 'Overweight';
+                healthImplications = 'Being overweight increases your risk of heart disease, type 2 diabetes, high blood pressure, and certain cancers.';
+                recommendation = 'Aim for gradual weight loss through a combination of increased physical activity and a moderately reduced calorie intake from whole foods.';
+            } else {
+                category = 'Obese';
+                healthImplications = 'Obesity significantly increases risks for serious health conditions including heart disease, stroke, type 2 diabetes, certain cancers, and sleep apnea.';
+                recommendation = 'Consider working with healthcare professionals to develop a comprehensive weight management plan that addresses diet, exercise, and potentially underlying health issues.';
+            }
+            
+            bmiAnalysisElement.innerHTML = `
+                <div class="recommendation">
+                    <h3>BMI Analysis</h3>
+                    <p><strong>Your BMI:</strong> ${bmi.toFixed(1)}</p>
+                    <p><strong>Category:</strong> ${category}</p>
+                    <p><strong>Health Implications:</strong> ${healthImplications}</p>
+                    <p><strong>Recommendation:</strong> ${recommendation}</p>
+                </div>
+            `;
+        }
+        
+        function displayFitnessAnalysis(fitnessScore) {
+            const fitnessAnalysisElement = document.getElementById('fitnessAnalysis');
+            let fitnessLevel, analysis, strengths, improvements;
+            
+            if (fitnessScore < 40) {
+                fitnessLevel = 'Beginner';
+                analysis = 'Your current fitness level indicates you\'re at the beginning of your fitness journey. This is a great starting point, and even small improvements can yield significant health benefits.';
+                strengths = 'You\'ve taken the important first step of assessing your fitness level.';
+                improvements = 'Focus on building consistency with moderate physical activity, gradually increasing duration and intensity as your fitness improves.';
+            } else if (fitnessScore < 60) {
+                fitnessLevel = 'Intermediate';
+                analysis = 'You have established some good fitness habits, but there\'s room for improvement in several areas. Your fitness foundation will help you progress more effectively.';
+                strengths = 'You already have some established exercise routines and lifestyle habits that support fitness.';
+                improvements = 'Work on increasing the intensity and variety of your workouts, and address any specific weaknesses in cardio, strength, or flexibility.';
+            } else if (fitnessScore < 80) {
+                fitnessLevel = 'Advanced';
+                analysis = 'You maintain good fitness habits across multiple dimensions. Your current level provides substantial health benefits and a strong foundation for specific goals.';
+                strengths = 'You have well-rounded fitness with good balance between different fitness components.';
+                improvements = 'Consider adding periodization to your training and exploring more specialized workouts to target specific goals.';
+            } else {
+                fitnessLevel = 'Elite';
+                analysis = 'Your fitness level is exceptional and puts you in the upper percentiles. Your routine demonstrates dedication and comprehensive attention to various fitness components.';
+                strengths = 'You excel across multiple fitness domains and likely have excellent exercise adherence and recovery practices.';
+                improvements = 'Focus on maintenance while avoiding overtraining, and consider working with specialized coaches to further refine performance in specific areas.';
+            }
+            
+            fitnessAnalysisElement.innerHTML = `
+                <div class="recommendation">
+                    <h3>Fitness Level: ${fitnessLevel}</h3>
+                    <p><strong>Overall Score:</strong> ${fitnessScore}/100</p>
+                    <p><strong>Analysis:</strong> ${analysis}</p>
+                    <p><strong>Strengths:</strong> ${strengths}</p>
+                    <p><strong>Areas for Improvement:</strong> ${improvements}</p>
+                </div>
+            `;
+        }
+        
+        function displayHealthRiskAnalysis(healthRisks, data) {
+            const healthRiskAnalysisElement = document.getElementById('healthRiskAnalysis');
+            
+            // Generate overall risk assessment
+            let overallRiskText;
+            if (healthRisks.overall < 20) {
+                overallRiskText = 'Low risk across major health domains. Your current lifestyle supports good health outcomes.';
+            } else if (healthRisks.overall < 40) {
+                overallRiskText = 'Low to moderate risk. While your overall risk is relatively low, there are specific areas that could benefit from targeted improvements.';
+            } else if (healthRisks.overall < 60) {
+                overallRiskText = 'Moderate risk. Several risk factors are present that could lead to health issues over time if not addressed.';
+            } else if (healthRisks.overall < 80) {
+                overallRiskText = 'Moderate to high risk. Multiple significant risk factors are present that require attention to prevent potential health problems.';
+            } else {
+                overallRiskText = 'High risk. Immediate attention to several health factors is recommended to reduce your risk of serious health conditions.';
+            }
+            
+            // Generate analysis for specific risk areas
+            const riskAnalysis = [];
+            
+            // Cardiovascular risk analysis
+            if (healthRisks.cardiovascular >= 60) {
+                riskAnalysis.push(`<strong>Cardiovascular Risk (${healthRisks.cardiovascular}%):</strong> Your cardiovascular risk is elevated. Key contributors may include ${data.lifestyle.smoke !== 'no' ? 'smoking, ' : ''}${data.lifestyle.alcohol === 'daily' || data.lifestyle.alcohol === 'weekly' ? 'alcohol consumption, ' : ''}${data.lifestyle.activity === '1' || data.lifestyle.activity === '2' ? 'low physical activity, ' : ''}${data.lifestyle.cardioMinutes < 30 ? 'insufficient cardio exercise' : ''}.`);
+            } else if (healthRisks.cardiovascular >= 30) {
+                riskAnalysis.push(`<strong>Cardiovascular Risk (${healthRisks.cardiovascular}%):</strong> Your cardiovascular risk is moderate. Consider improving cardio exercise frequency and managing other risk factors.`);
+            } else {
+                riskAnalysis.push(`<strong>Cardiovascular Risk (${healthRisks.cardiovascular}%):</strong> Your cardiovascular risk is low. Continue with your heart-healthy habits.`);
+            }
+            
+            // Musculoskeletal risk analysis
+            if (healthRisks.musculoskeletal >= 60) {
+                riskAnalysis.push(`<strong>Musculoskeletal Risk (${healthRisks.musculoskeletal}%):</strong> Your musculoskeletal risk is elevated. Key contributors may include ${data.fitness.injuries === 'yes' ? 'previous injuries, ' : ''}${data.fitness.pushUps < 5 || data.fitness.plankTime < 20 ? 'low muscle strength/endurance, ' : ''}${data.lifestyle.strengthDays < 2 ? 'insufficient strength training' : ''}.`);
+            } else if (healthRisks.musculoskeletal >= 30) {
+                riskAnalysis.push(`<strong>Musculoskeletal Risk (${healthRisks.musculoskeletal}%):</strong> Your musculoskeletal risk is moderate. Consider adding more strength training to your routine.`);
+            } else {
+                riskAnalysis.push(`<strong>Musculoskeletal Risk (${healthRisks.musculoskeletal}%):</strong> Your musculoskeletal risk is low. Continue with regular strength and mobility exercises.`);
+            }
+            
+            // Metabolic risk analysis
+            if (healthRisks.metabolic >= 60) {
+                riskAnalysis.push(`<strong>Metabolic Risk (${healthRisks.metabolic}%):</strong> Your metabolic risk is elevated. This may be related to dietary and lifestyle factors.`);
+                riskAnalysis.push(`<strong>Metabolic Risk (${healthRisks.metabolic}%):</strong> Your metabolic risk is elevated. Key contributors may include ${calculateBMI(data.personalInfo.weight, data.personalInfo.height) > 25 ? 'elevated BMI, ' : ''}${data.nutrition.processedFoods > 10 ? 'high processed food intake, ' : ''}${data.nutrition.fruitsVeggies < 3 ? 'low fruit and vegetable consumption' : ''}.`);
+            } else if (healthRisks.metabolic >= 30) {
+                riskAnalysis.push(`<strong>Metabolic Risk (${healthRisks.metabolic}%):</strong> Your metabolic risk is moderate. Consider improving dietary quality and maintaining healthy weight.`);
+            } else {
+                riskAnalysis.push(`<strong>Metabolic Risk (${healthRisks.metabolic}%):</strong> Your metabolic risk is low. Continue with your healthy eating habits.`);
+            }
+            
+            // Stress risk analysis
+            if (healthRisks.stress >= 60) {
+                riskAnalysis.push(`<strong>Stress-Related Risk (${healthRisks.stress}%):</strong> Your stress-related risk is elevated. Key contributors may include ${data.lifestyle.stressLevel > 7 ? 'high perceived stress levels, ' : ''}${data.lifestyle.sleepHours < 6 ? 'insufficient sleep' : ''}.`);
+            } else if (healthRisks.stress >= 30) {
+                riskAnalysis.push(`<strong>Stress-Related Risk (${healthRisks.stress}%):</strong> Your stress-related risk is moderate. Consider stress management techniques and improving sleep quality.`);
+            } else {
+                riskAnalysis.push(`<strong>Stress-Related Risk (${healthRisks.stress}%):</strong> Your stress-related risk is low. Continue with stress management practices.`);
+            }
+            
+            // Medical conditions note
+            let medicalNote = '';
+            if (data.fitness.medicalConditions) {
+                medicalNote = `<p><strong>Note:</strong> Your reported medical condition(s) (${data.fitness.medicalConditions}) have been factored into this risk assessment. Always consult healthcare providers regarding condition-specific recommendations.</p>`;
+            }
+            
+            healthRiskAnalysisElement.innerHTML = `
+                <div class="recommendation">
+                    <h3>Health Risk Assessment</h3>
+                    <p><strong>Overall Risk Level:</strong> ${healthRisks.overall}%</p>
+                    <p>${overallRiskText}</p>
+                    <h4>Risk Breakdown:</h4>
+                    <ul>
+                        ${riskAnalysis.map(risk => `<li>${risk}</li>`).join('')}
+                    </ul>
+                    ${medicalNote}
+                </div>
+            `;
+        }
+        
+        function displayRecommendations(recommendations) {
+            const recommendationsElement = document.getElementById('recommendations');
+            
+            // Function to create recommendation sections
+            function createRecommendationSection(title, recommendations) {
+                if (recommendations.length === 0) return '';
+                
+                return `
+                    <div class="recommendation">
+                        <h3>${title}</h3>
+                        <ul>
+                            ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // Create HTML for each recommendation section
+            const exerciseRecommendations = createRecommendationSection('Exercise Recommendations', recommendations.exercise);
+            const nutritionRecommendations = createRecommendationSection('Nutrition Recommendations', recommendations.nutrition);
+            const lifestyleRecommendations = createRecommendationSection('Lifestyle Recommendations', recommendations.lifestyle);
+            const specializedRecommendations = createRecommendationSection('Specialized Recommendations', recommendations.specialized);
+            
+            // Combine all recommendations
+            recommendationsElement.innerHTML = `
+                ${exerciseRecommendations}
+                ${nutritionRecommendations}
+                ${lifestyleRecommendations}
+                ${specializedRecommendations}
+            `;
+        }
+    </script>
+</body>
+</html>

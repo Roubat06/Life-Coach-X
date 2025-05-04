@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Coach X - Workout Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse-animation {
+            animation: pulse 1s infinite;
+        }
+        .body-gradient {
+            background: linear-gradient(-45deg, #6b7280, #3b82f6, #ae70e7, #42e3ad);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        .coach-avatar {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #858fba;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 20px;
+            background: linear-gradient(-45deg, #6b7280, #3b82f6, #ae70e7, #42e3ad);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        .coach-speaking {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sound-wave {
+            display: flex;
+            align-items: center;
+            height: 20px;
+        }
+        
+        .sound-wave span {
+            display: inline-block;
+            width: 3px;
+            margin: 0 1px;
+            background-color: white;
+        }
+        
+        .wave-bar1 { height: 8px; animation: sound 1.5s 0.1s ease-in-out infinite; }
+        .wave-bar2 { height: 15px; animation: sound 1.5s 0.2s ease-in-out infinite; }
+        .wave-bar3 { height: 10px; animation: sound 1.5s 0.3s ease-in-out infinite; }
+        .wave-bar4 { height: 18px; animation: sound 1.5s 0.4s ease-in-out infinite; }
+        .wave-bar5 { height: 12px; animation: sound 1.5s 0.5s ease-in-out infinite; }
+        
+        @keyframes sound {
+            0% { height: 3px; }
+            50% { height: 15px; }
+            100% { height: 3px; }
+        }
+        
+        .speech-bubble {
+            position: relative;
+            background: #f0f9ff;
+            border-radius: .4em;
+            padding: 15px;
+            margin-left: 15px;
+        }
+        
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-right-color: #f0f9ff;
+            border-left: 0;
+            margin-top: -10px;
+            margin-left: -10px;
+        }
+    </style>
+</head>
+<body class="body-gradient  min-h-screen">
+     <!-- Navbar -->
+  <nav class="flex items-center justify-between px-6 py-4"
+    style="background-color: #4F46E5;"> <!-- Indigo-600 -->
+    <div class="text-white font-bold text-2xl select-none">LifeCoachX</div>
+    <ul class="flex space-x-6 text-indigo-200 text-lg font-semibold">
+      <li><a href="chatbot" class="hover:text-white">Chat Bot</a></li>
+      <li><a href="user_data" class="hover:text-white">Health Reports</a></li>
+      <li><a href="sound" class="hover:text-white">Music</a></li>
+      <li><a href="diet" class="hover:text-white">Diet</a></li>
+      <li><a href="intake" class="hover:text-white">Intake</a></li>
+      <li><a href="#" class="hover:text-white">Workout</a></li>
+      <li><a href="http://localhost:3000/chat-app.html" class="hover:text-white">Chat App</a></li>
+
+    </ul>
+  </nav>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-2">Life Coach X</h1>
+        <p class="text-center text-gray-600 mb-8">Your AI Fitness Companion</p>
+        
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+            <form id="workoutForm" class="space-y-6">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="mood">
+                        How are you feeling today?
+                    </label>
+                    <select id="mood" name="mood" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="energetic">Energetic</option>
+                        <option value="tired">Tired</option>
+                        <option value="stressed">Stressed</option>
+                        <option value="happy">Happy</option>
+                        <option value="motivated">Motivated</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="fitness_level">
+                        Fitness Level
+                    </label>
+                    <select id="fitness_level" name="fitness_level" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="workout_type">
+                        Workout Type
+                    </label>
+                    <select id="workout_type" name="workout_type" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="strength">Strength Training</option>
+                        <option value="cardio">Cardio</option>
+                        <option value="flexibility">Flexibility</option>
+                        <option value="hiit">HIIT</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="duration">
+                        Duration (minutes)
+                    </label>
+                    <input type="number" id="duration" name="duration" min="10" max="120" value="30"
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="focus_areas">
+                        Focus Areas (comma-separated)
+                    </label>
+                    <input type="text" id="focus_areas" name="focus_areas" placeholder="e.g., core, legs, upper body"
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="flex items-center p-4 bg-blue-50 rounded-lg">
+                    <div class="flex-shrink-0">
+                        <div class="coach-avatar w-12 h-12 bg-blue-500 flex items-center justify-center rounded-full">
+                            <i class="fas fa-user-headset text-white text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-grow">
+                        <h3 class="font-bold text-blue-700">Voice Coach</h3>
+                        <p class="text-sm text-gray-600">Get real-time audio guidance during your workout</p>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="voice_enabled" name="voice_enabled" class="h-5 w-5 text-blue-500 border-gray-300 rounded">
+                        <label for="voice_enabled" class="ml-2 block text-gray-700 font-bold">
+                            Enable
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" 
+                        class="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+                    Generate Workout
+                </button>
+            </form>
+        </div>
+
+        <div id="workoutResult" class="max-w-2xl mx-auto mt-8 bg-white rounded-lg shadow-lg p-6 hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Personalized Workout</h2>
+            
+            <!-- Voice Coach Interface -->
+            <div id="voiceCoachInterface" class="mb-6 hidden">
+                <div class="flex items-start mb-4">
+                    <div class="coach-avatar">
+                        <i class="fas fa-user-headset text-white text-3xl"></i>
+                        <div id="speakingIndicator" class="coach-speaking hidden">
+                            <div class="sound-wave">
+                                <span class="wave-bar1"></span>
+                                <span class="wave-bar2"></span>
+                                <span class="wave-bar3"></span>
+                                <span class="wave-bar4"></span>
+                                <span class="wave-bar5"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-grow speech-bubble">
+                        <h3 class="font-bold text-lg" id="coachName">Coach Alex</h3>
+                        <div id="coachMessage" class="mt-2 text-gray-700"></div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <button id="startWorkoutBtn" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 font-bold">
+                        <i class="fas fa-play mr-2"></i>Start Workout
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Workout Timer (Hidden initially) -->
+            <div id="workoutTimer" class="hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <span class="text-lg font-bold" id="currentExerciseName">Exercise Name</span>
+                    </div>
+                    <div class="text-3xl font-bold" id="timerDisplay">00:30</div>
+                    <div>
+                        <button id="pauseWorkoutBtn" class="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button id="skipExerciseBtn" class="bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600 ml-2">
+                            <i class="fas fa-forward"></i>
+                        </button>
+                        <button id="stopWorkoutBtn" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 ml-2">
+                            <i class="fas fa-stop"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                    <div id="timerProgress" class="bg-blue-600 h-2.5 rounded-full" style="width: 100%"></div>
+                </div>
+                
+                <!-- Active Coach Section -->
+                <div class="flex items-start mb-4" id="activeCoachSection">
+                    <div class="coach-avatar w-16 h-16">
+                        <i class="fas fa-user-headset text-white text-2xl"></i>
+                        <div id="activeSpeakingIndicator" class="coach-speaking">
+                            <div class="sound-wave">
+                                <span class="wave-bar1"></span>
+                                <span class="wave-bar2"></span>
+                                <span class="wave-bar3"></span>
+                                <span class="wave-bar4"></span>
+                                <span class="wave-bar5"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="coachCue" class="ml-4 flex-grow speech-bubble font-bold text-lg text-blue-700"></div>
+                </div>
+            </div>
+            
+            <div id="workoutContent" class="prose max-w-none"></div>
+        </div>
+    </div>
+
+    <script>
+        let isSubmitting = false;
+        let workoutExercises = [];
+        let currentExerciseIndex = -1;
+        let exerciseTimer;
+        let remainingTime = 0;
+        let isPaused = false;
+        let speechSynthesis = window.speechSynthesis;
+        let voiceCoachEnabled = false;
+        let isSpeaking = false;
+        
+        // Initialize Speech Synthesis
+        function initSpeechSynthesis() {
+            if ('speechSynthesis' in window) {
+                // Get speech synthesis voices
+                speechSynthesis.onvoiceschanged = function() {
+                    voices = speechSynthesis.getVoices();
+                };
+            } else {
+                console.log("Text-to-speech not supported in this browser");
+                // Disable voice coach if speech synthesis is not supported
+                document.getElementById('voice_enabled').disabled = true;
+                document.getElementById('voice_enabled').checked = false;
+                alert("Voice coach features are not supported in your browser. Please try a different browser.");
+            }
+        }
+        
+        // Speak text using speech synthesis
+        function speak(text, rate = 1.0, pitch = 1.0) {
+            if (!voiceCoachEnabled || !speechSynthesis) return;
+            
+            // Cancel any ongoing speech
+            speechSynthesis.cancel();
+            
+            // Create a new speech utterance
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = rate;
+            utterance.pitch = pitch;
+            
+            // Select a voice that sounds like a coach (if available)
+            const voices = speechSynthesis.getVoices();
+            const preferredVoices = voices.filter(voice => 
+                voice.name.includes('English') && 
+                (voice.name.includes('Male') || voice.name.includes('Guy'))
+            );
+            
+            if (preferredVoices.length > 0) {
+                utterance.voice = preferredVoices[0];
+            }
+            
+            // Show speaking indicator
+            showSpeakingIndicator(true);
+            
+            // Add event listeners
+            utterance.onstart = function() {
+                isSpeaking = true;
+            };
+            
+            utterance.onend = function() {
+                isSpeaking = false;
+                showSpeakingIndicator(false);
+            };
+            
+            // Speak the text
+            speechSynthesis.speak(utterance);
+        }
+        
+        function showSpeakingIndicator(show) {
+            // Show/hide speaking indicators based on workout state
+            if (document.getElementById('workoutTimer').classList.contains('hidden')) {
+                // Pre-workout state
+                document.getElementById('speakingIndicator').classList.toggle('hidden', !show);
+            } else {
+                // During workout state
+                document.getElementById('activeSpeakingIndicator').classList.toggle('hidden', !show);
+            }
+        }
+
+        document.getElementById('workoutForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (isSubmitting) return;
+            isSubmitting = true;
+            
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            submitButton.textContent = 'Generating...';
+            submitButton.disabled = true;
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Set voice coach enabled flag
+            voiceCoachEnabled = data.voice_enabled === 'on';
+            
+            try {
+                // First get the workout plan
+                const response = await fetch('/generate_workout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...data,
+                        voice_enabled: voiceCoachEnabled
+                    }),
+                });
+                
+                const result = await response.json();
+                
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+                
+                // Store workout exercises globally
+                workoutExercises = result;
+                
+                // Display the workout result
+                document.getElementById('workoutResult').classList.remove('hidden');
+                document.getElementById('workoutContent').innerHTML = formatWorkout(result);
+                
+                // Setup voice coach if enabled
+                if (voiceCoachEnabled) {
+                    await setupVoiceCoach(data);
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to generate workout. Please try again.');
+            } finally {
+                isSubmitting = false;
+                submitButton.textContent = originalButtonText;
+                submitButton.disabled = false;
+            }
+        });
+
+        async function setupVoiceCoach(formData) {
+            // Show voice coach interface
+            document.getElementById('voiceCoachInterface').classList.remove('hidden');
+            
+            try {
+                // Get coach introduction
+                const introResponse = await fetch('/get_coach_intro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                
+                const introResult = await introResponse.json();
+                
+                // Get mood advice
+                const moodResponse = await fetch('/get_mood_advice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...formData,
+                        voice_enabled: true
+                    }),
+                });
+                
+                const moodResult = await moodResponse.json();
+                
+                // Randomly select coach name based on gender
+                const maleNames = ["Alex", "Mike", "Chris", "Jason", "David"];
+                const coachName = "Coach " + maleNames[Math.floor(Math.random() * maleNames.length)];
+                document.getElementById('coachName').textContent = coachName;
+                
+                // Display coach message
+                const coachMessage = `
+                    <p class="font-bold mb-2">${introResult.intro}</p>
+                    <p>${moodResult.message}</p>
+                    <p class="mt-2">${moodResult.approach}</p>
+                `;
+                
+                document.getElementById('coachMessage').innerHTML = coachMessage;
+                
+                // Speak the coach introduction after a short delay
+                setTimeout(() => {
+                    speak(introResult.intro + ' ' + moodResult.message + ' ' + moodResult.approach);
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error setting up voice coach:', error);
+            }
+        }
+
+        function formatWorkout(exercises) {
+            if (!Array.isArray(exercises)) {
+                return '<p class="text-red-500">Invalid workout data received</p>';
+            }
+
+            return `
+                <div class="space-y-4">
+                    ${exercises.map((exercise, index) => `
+                        <div class="border rounded-lg p-4">
+                            <h3 class="text-xl font-semibold mb-2">${index + 1}. ${exercise.name}</h3>
+                            <p class="text-gray-600 mb-2">Duration: ${exercise.duration} seconds</p>
+                            <p class="text-gray-600 mb-2">Intensity: ${'⭐'.repeat(exercise.intensity)}</p>
+                            <p class="text-gray-700">${exercise.instructions}</p>
+                            ${exercise.coaching_cues ? `
+                                <div class="mt-3 p-2 bg-blue-50 rounded">
+                                    <p class="text-sm font-bold text-blue-700">Coach says:</p>
+                                    <ul class="text-sm text-blue-700">
+                                        ${exercise.coaching_cues.map(cue => `<li>"${cue}"</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Start the workout
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'startWorkoutBtn') {
+                startWorkout();
+            }
+            
+            if (e.target && e.target.id === 'pauseWorkoutBtn') {
+                togglePause();
+            }
+            
+            if (e.target && e.target.id === 'skipExerciseBtn') {
+                startNextExercise();
+            }
+            
+            if (e.target && e.target.id === 'stopWorkoutBtn') {
+                stopWorkout();
+            }
+        });
+        
+        function startWorkout() {
+            // Hide coach interface and show timer
+            document.getElementById('voiceCoachInterface').classList.add('hidden');
+            document.getElementById('workoutTimer').classList.remove('hidden');
+            
+            // Start with the first exercise
+            currentExerciseIndex = -1;
+            startNextExercise();
+            
+            // Speak workout start
+            speak("Let's begin your workout. Get ready for the first exercise.");
+        }
+        
+        function startNextExercise() {
+            // Stop any running timer
+            clearInterval(exerciseTimer);
+            
+            // Move to next exercise
+            currentExerciseIndex++;
+            
+            // Check if workout is complete
+            if (currentExerciseIndex >= workoutExercises.length) {
+                completeWorkout();
+                return;
+            }
+            
+            // Get current exercise
+            const exercise = workoutExercises[currentExerciseIndex];
+            
+            // Update UI
+            document.getElementById('currentExerciseName').textContent = `${currentExerciseIndex + 1}. ${exercise.name}`;
+            remainingTime = exercise.duration;
+            updateTimerDisplay();
+            
+            // Show initial coaching cue
+            if (exercise.coaching_cues && exercise.coaching_cues.length > 0) {
+                showCoachCue(exercise.coaching_cues[0]);
+            } else {
+                showCoachCue("Let's go! You can do this!");
+            }
+            
+            // Speak exercise name and instructions
+            speak(`Next exercise: ${exercise.name}. ${exercise.instructions}`);
+            
+            // Start exercise timer
+            isPaused = false;
+            exerciseTimer = setInterval(updateTimer, 1000);
+        }
+        
+        function updateTimer() {
+            if (isPaused) return;
+            
+            remainingTime--;
+            
+            // Update timer display
+            updateTimerDisplay();
+            
+            // Update progress bar
+            const exercise = workoutExercises[currentExerciseIndex];
+            const progressPercent = (remainingTime / exercise.duration) * 100;
+            document.getElementById('timerProgress').style.width = `${progressPercent}%`;
+            
+            // Play coaching cues at appropriate times
+            if (voiceCoachEnabled && exercise.coaching_cues) {
+                // Calculate time points for coaching cues (beginning, middle, near end)
+                const duration = exercise.duration;
+                if (remainingTime === duration - 3) {
+                    // Beginning cue
+                    speak(exercise.coaching_cues[0] || "Let's go!");
+                    showCoachCue(exercise.coaching_cues[0] || "Let's go!");
+                } else if (remainingTime === Math.floor(duration / 2)) {
+                    // Middle cue
+                    speak(exercise.coaching_cues[1] || "Keep it up!");
+                    showCoachCue(exercise.coaching_cues[1] || "Keep it up!");
+                } else if (remainingTime === 5) {
+                    // Near end cue
+                    speak(exercise.coaching_cues[2] || "Almost there!");
+                    showCoachCue(exercise.coaching_cues[2] || "Almost there!");
+                }
+            }
+            
+            // Pulse animation when time is running low
+            if (remainingTime <= 5) {
+                document.getElementById('timerDisplay').classList.add('pulse-animation');
+            } else {
+                document.getElementById('timerDisplay').classList.remove('pulse-animation');
+            }
+            
+            // Check if exercise is complete
+            if (remainingTime <= 0) {
+                clearInterval(exerciseTimer);
+                
+                // Add a short rest between exercises
+                speak("Good job! Take a quick rest.");
+                showCoachCue("Good job! Take a quick rest.");
+                
+                // Move to next exercise after a short rest
+                setTimeout(startNextExercise, 3000);
+            }
+        }
+        
+        function showCoachCue(cue) {
+            const cueElement = document.getElementById('coachCue');
+            cueElement.textContent = cue;
+            
+            // Flash animation effect
+            cueElement.classList.add('text-2xl');
+            setTimeout(() => {
+                cueElement.classList.remove('text-2xl');
+            }, 300);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function togglePause() {
+            isPaused = !isPaused;
+            const pauseBtn = document.getElementById('pauseWorkoutBtn');
+            
+            if (isPaused) {
+                pauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                pauseBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+                pauseBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                speak("Workout paused.");
+                showCoachCue("Workout paused. Take a breath.");
+            } else {
+                pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                pauseBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                pauseBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+                speak("Workout resumed. Let's keep going!");
+                showCoachCue("Let's keep going!");
+            }
+        }
+        
+        function stopWorkout() {
+            clearInterval(exerciseTimer);
+            
+            // Hide timer and show voice coach interface
+            document.getElementById('workoutTimer').classList.add('hidden');
+            document.getElementById('voiceCoachInterface').classList.remove('hidden');
+            
+            // Speak workout stopped
+            speak("Workout stopped. Take a moment to cool down.");
+            
+            // Update coach message
+            document.getElementById('coachMessage').innerHTML = `
+                <p class="font-bold">Workout stopped</p>
+                <p>That's okay! Take a moment to cool down and recover.</p>
+                <p class="mt-2">You can restart your workout anytime you're ready.</p>
+            `;
+        }
+        
+        function completeWorkout() {
+            clearInterval(exerciseTimer);
+            
+            // Hide timer
+            document.getElementById('workoutTimer').classList.add('hidden');
+            document.getElementById('voiceCoachInterface').classList.remove('hidden');
+            
+            // Update coach message with completion
+            document.getElementById('coachMessage').innerHTML = `
+                <p class="font-bold text-green-700">Workout Complete!</p>
+                <p>Amazing job! You've finished your entire workout plan.</p>
+                <p class="mt-2">Remember to stay hydrated and rest properly before your next session.</p>
+            `;
+            
+            // Show completion message
+            const completionMessage = `
+                <div class="bg-green-100 border-l-4 border-green-500 p-4 rounded mb-6">
+                    <h3 class="font-bold text-lg text-green-700">Workout Complete!</h3>
+                    <p>Great job! You've completed your workout.</p>
+                    <p class="mt-2">Remember to stay hydrated and rest properly.</p>
+                </div>
+            `;
+            
+            document.getElementById('workoutContent').insertAdjacentHTML('beforebegin', completionMessage);
+            
+            // Speak completion message
+            speak("Congratulations! You've completed your workout. Amazing work today! Remember to hydrate and rest properly.", 0.9, 1.1);
+        }
+        
+        // Initialize speech synthesis when the page loads
+        window.addEventListener('DOMContentLoaded', initSpeechSynthesis);
+    </script>
+</body>
+</html>

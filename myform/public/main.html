@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LifeCoachX - Your Personal AI for Goals & Habits</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #7e65ee;
+      --secondary-color: #db7144;
+      --accent-color: #ff6584;
+      --dark-color: #2d3748;
+      --light-color: #f7fafc;
+      --gray-color: #a0aec0;
+    }
+
+    /* Floating circles animation */
+    .floating-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(126, 101, 238, 0.4);
+      animation: floatUpDown 6s ease-in-out infinite;
+      filter: blur(2px);
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    .floating-circle.small {
+      width: 20px;
+      height: 20px;
+      animation-duration: 5s;
+    }
+
+    .floating-circle.medium {
+      width: 40px;
+      height: 40px;
+      animation-duration: 7s;
+    }
+
+    .floating-circle.large {
+      width: 60px;
+      height: 60px;
+      animation-duration: 9s;
+    }
+
+    @keyframes floatUpDown {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    /* General body and fade-in effects */
+    body {
+      background-color: #000000;
+      color: white;
+      overflow-x: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Navbar styling */
+    nav ul li a {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: white;
+      transition: width 0.3s ease;
+      border-radius: 1px;
+    }
+
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+
+    /* Info box styling */
+    .info-box {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(126, 101, 238, 0.6);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 3rem auto;
+      color: #e0e7ff;
+      box-shadow: 0 0 10px rgba(126, 101, 238, 0.7);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .info-box:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(126, 101, 238, 1);
+    }
+
+    .info-box h3 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      color: #a5b4fc;
+      font-weight: 700;
+    }
+
+    .info-box p {
+      margin-bottom: 1rem;
+      line-height: 1.5;
+      font-size: 1.1rem;
+    }
+
+    .info-section {
+      margin-top: 2rem;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Floating Circles -->
+  <div class="floating-circle small" style="top: 10%; left: 15%; animation-delay: 0s;"></div>
+  <div class="floating-circle medium" style="top: 40%; left: 70%; animation-delay: 2s;"></div>
+  <div class="floating-circle large" style="top: 75%; left: 30%; animation-delay: 4s;"></div>
+  <div class="floating-circle small" style="top: 60%; left: 80%; animation-delay: 1s;"></div>
+  <div class="floating-circle medium" style="top: 85%; left: 60%; animation-delay: 3s;"></div>
+
+  <!-- Header with Navbar -->
+  <header class="bg-gradient-to-r from-gray-900 to-gray-800 w-full z-10 shadow">
+    <div class="container mx-auto flex justify-between items-center p-4">
+      <div class="logo text-2xl font-bold text-white select-none">LifeCoachX</div>
+      <nav>
+        <ul class="flex space-x-6 items-center text-white">
+          <li><a href="#features" class="hover:text-gray-300">Features</a></li>
+          <li><a href="#how-it-works" class="hover:text-gray-300">How It Works</a></li>
+          <li><a href="#testimonials" class="hover:text-gray-300">Testimonials</a></li>
+          <li><a href="#get-started" class="hover:text-gray-300">Get Started</a></li>
+          <li><a href="/login" class="hover:text-gray-300 font-semibold border border-white rounded px-3 py-1 ml-4">Login</a></li>
+          <li><a href="/register" class="hover:text-gray-300 font-semibold bg-white text-gray-900 rounded px-3 py-1">Sign Up</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero py-32 flex items-center justify-center mt-16">
+    <div class="hero-content text-center px-4 max-w-[900px] fade-in">
+      <h1 class="text-6xl md:text-8xl select-none text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600">LifeCoachX</h1>
+      <h4 class="text-2xl md:text-4xl text-gray-300 mt-4">Unlock your best self with AI-powered, personalized health, fitness, and wellness solutions-all in one vibrant community.</h4>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features py-20" id="features">
+    <div class="container mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-10 text-white fade-in">Powerful Features</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-gray-900 bg-opacity-30 p-6 rounded-lg shadow fade-in">
+          <i class="fas fa-bullseye text-purple-400 text-4xl mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Goal Tracking</h3>
+          <p>Set SMART goals and get AI-powered recommendations to achieve them faster.</p>
+        </div>
+        <div class="bg-gray-900 bg-opacity-30 p-6 rounded-lg shadow fade-in" style="animation-delay: 0.2s;">
+          <i class="fas fa-history text-purple-400 text-4xl mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Habit Formation</h3>
+          <p>Build positive habits with our science-backed habit formation system.</p>
+        </div>
+        <div class="bg-gray-900 bg-opacity-30 p-6 rounded-lg shadow fade-in" style="animation-delay: 0.4s;">
+          <i class="fas fa-chart-line text-purple-400 text-4xl mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Progress Analytics</h3>
+          <p>Visualize your progress with detailed analytics and insights.</p>
+        </div>
+        <div class="bg-gray-900 bg-opacity-30 p-6 rounded-lg shadow fade-in" style="animation-delay: 0.6s;">
+          <i class="fas fa-balance-scale text-purple-400 text-4xl mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Life Balance</h3>
+          <p>Maintain harmony between work, health, relationships, and personal growth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Info Box Section -->
+  <section class="info-box fade-in">
+    <p class="mb-6 text-lg font-semibold">Ready to transform your health and fitness journey? Join now for free personalized plans, expert support, and a community that cheers you on!</p>
+    <a href="/register" class="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300 ease-in-out hover:scale-105">Start Now</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 py-12 text-center text-white mt-32">
+    <p>&copy; 2025 LifeCoachX. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const fadeInElements = document.querySelectorAll('.fade-in');
+      setTimeout(() => {
+        fadeInElements.forEach(element => {
+          element.classList.add('visible');
+        });
+      }, 500);
+    });
+  </script>
+</body>
+</html>

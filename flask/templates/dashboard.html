@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LifeCoachX</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    /* Navbar style */
+    nav {
+      background: #4F46E5; /* Indigo-600 */
+    }
+
+    /* For carousel */
+    .carousel {
+      position: relative;
+      overflow: hidden;
+      max-width: 900px;
+      margin: 2rem auto;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(79,70,229,0.5);
+      background-color: #1E293B; /* slate-800 */
+      color: #E0E7FF; /* slate-100 */
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.7s ease-in-out;
+      width: 300%;
+    }
+
+    .slide {
+      min-width: 100%;
+      padding: 2rem;
+      box-sizing: border-box;
+      text-align: center;
+      user-select: none;
+    }
+
+    .slide h3 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      color: #C7D2FE; /* indigo-200 */
+    }
+
+    .slide p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #CBD5E1; /* slate-300 */
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Carousel buttons */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(79,70,229,0.7);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      padding: 0 1rem;
+      cursor: pointer;
+      z-index: 10;
+      border-radius: 0.25rem;
+      transition: background 0.3s;
+    }
+
+    .carousel-btn:hover {
+      background: rgba(79,70,229,0.9);
+    }
+
+    .prev {
+      left: 1rem;
+    }
+
+    .next {
+      right: 1rem;
+    }
+
+    /* Features section */
+    .features {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+      color: #E0E7FF; /* slate-100 */
+    }
+
+    .features h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #3730A3; /* indigo-700 */
+    }
+
+    .feature-box {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      color: #E0E7FF;
+    }
+    .feature-box h3 {
+      margin-bottom: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #A5B4FC; /* light indigo */
+    }
+    .feature-box p {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    /* Users section */
+    .users {
+      max-width: 900px;
+      margin: 3rem auto 5rem;
+      padding: 0 1rem;
+      color: #E0E7FF; /* slate-100 */
+      text-align: center;
+    }
+
+    .users h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #3730A3; /* indigo-700 */
+    }
+
+    .users p {
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.7;
+      font-size: 1.125rem;
+    }
+
+  </style>
+</head>
+<body class="bg-gray-900">
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-6 py-4">
+    <div class="text-white font-bold text-2xl select-none">LifeCoachX</div>
+    <ul class="flex space-x-6 text-indigo-200 text-lg font-semibold">
+      <li><a href="chatbot" class="hover:text-white">Chat Bot</a></li>
+      <li><a href="user_data" class="hover:text-white">Health Reports</a></li>
+      <li><a href="sound" class="hover:text-white">Music</a></li>
+      <li><a href="diet" class="hover:text-white">Diet and Intake</a></li>
+      <li><a href="workout" class="hover:text-white">Workout</a></li>
+      <li><a href="http://localhost:3000/chat-app.html" class="hover:text-white">Chat App</a></li>
+
+    </ul>
+  </nav>
+
+  <div class="flex-1 flex justify-center">
+    <a href="news" class="block">
+      <button class="bg-white text-[var(--primary-color)] font-semibold px-4 py-2 rounded-xl shadow hover:bg-gray-200 transition">
+        wanna read some news
+      </button>
+    </a>
+  </div>
+
+  <!-- Carousel -->
+  <section class="carousel" aria-label="Features carousel">
+    <button class="carousel-btn prev" aria-label="Previous Slide">&#10094;</button>
+    <div class="slides">
+      <div class="slide" aria-hidden="false">
+        <h3>Comprehensive Health & Fitness AI</h3>
+        <p>Leverage AI powered chatbot for personalized health reports, diet plans, effective workouts, and real-time coaching all in one platform.</p>
+      </div>
+      <div class="slide" aria-hidden="true">
+        <h3>Dynamic Music & Sound Therapy</h3>
+        <p>Enjoy AI-curated music playlists and sound therapy sessions designed to boost your mood, focus, and workout performance.</p>
+      </div>
+      <div class="slide" aria-hidden="true">
+        <h3>Community and Chat App Integration</h3>
+        <p>Connect instantly with fitness enthusiasts, share your journey, join challenges, and get motivated via our secure chat app.</p>
+      </div>
+    </div>
+    <button class="carousel-btn next" aria-label="Next Slide">&#10095;</button>
+  </section>
+
+  <!-- Features Boxes -->
+  <section class="features">
+    <h2>Features</h2>
+    <div class="feature-box">
+      <h3>Personalized AI Chatbot</h3>
+      <p>An intelligent assistant offers tailored advice on fitness, nutrition, and mental wellness, providing 24/7 support and guidance.</p>
+    </div>
+    <div class="feature-box">
+      <h3>AI-Based Health Reports</h3>
+      <p>Detailed, data-driven health assessments generated from user inputs and wearable integrations, delivering actionable insights and progress tracking.</p>
+    </div>
+    <div class="feature-box">
+      <h3>Sound Therapy & AI Music Suggestions</h3>
+      <p>AI curates music and soundscapes to enhance mood, focus, and recovery, integrating mental wellness into your fitness journey.</p>
+    </div>
+    <div class="feature-box">
+      <h3>AI Diet Generator & Daily Intake Analysis</h3>
+      <p>Custom meal plans and nutrition feedback adapt to your goals, preferences, and daily habits, optimizing dietary outcomes.</p>
+    </div>
+    <div class="feature-box">
+      <h3>AI Workout Generator</h3>
+      <p>Personalized workout routines adjust in real time to your progress, fitness level, and goals, with features like form correction and injury prevention.</p>
+    </div>
+    <div class="feature-box">
+      <h3>Community and Social Motivation</h3>
+      <p>Built-in community features foster accountability, support, and friendly competition, proven to boost long-term engagement and success.</p>
+    </div>
+    <div class="feature-box">
+      <h3>Cutting-Edge AI Technologies</h3>
+      <p>Incorporates the latest in machine learning, computer vision (for form correction), predictive analytics, and conversational AI, delivering an expert experience anytime, anywhere.</p>
+    </div>
+    <div class="feature-box">
+      <h3>Holistic Health Approach</h3>
+      <p>By integrating physical fitness, nutrition, mental wellness, and social support, the platform addresses the full spectrum of health—not just one aspect.</p>
+    </div>
+    <div class="feature-box">
+      <h3>Real-Time Adaptive Feedback</h3>
+      <p>AI analyzes user data live—adjusting routines, suggesting rest, correcting form, and preventing injuries for safer, more effective results.</p>
+    </div>
+    <div class="feature-box">
+      <h3>Hyper-Personalization</h3>
+      <p>Unlike generic apps, LifeCoachX uses AI to deliver truly individualized plans for workouts, nutrition, and mental health.</p>
+    </div>
+  </section>
+
+  <!-- Users Section -->
+  <section class="users">
+    <h2>Who Can Benefit?</h2>
+    <p>
+      LifeCoachX suits beginners starting their fitness journeys, athletes aiming to optimize performance, busy professionals wanting personalized convenience, and wellness enthusiasts seeking integrated mental and physical health support. Everyone finds tailored guidance to succeed.
+    </p>
+  </section>
+
+  <script>
+    const slides = document.querySelector('.slides');
+    const slideCount = slides.children.length;
+    let currentIndex = 0;
+
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+
+    function updateCarousel() {
+      slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+      for (let i = 0; i < slideCount; i++) {
+        slides.children[i].setAttribute('aria-hidden', i !== currentIndex);
+      }
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+      updateCarousel();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % slideCount;
+      updateCarousel();
+    });
+
+    // Auto slide every 6 seconds
+    setInterval(() => {
+      currentIndex = (currentIndex + 1) % slideCount;
+      updateCarousel();
+    }, 6000);
+
+    updateCarousel();
+  </script>
+
+
+
+</body>
+</html>
+
+
+
+
+

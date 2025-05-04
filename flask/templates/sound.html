@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Therapy X</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2980b9;
+        --accent-color: #e74c3c;
+        --background-color: #a7cef4;
+        --light-bg: #bdd4f5;
+        --card-bg: #ffffff;
+        --text-main: #2c3e50;
+        --text-secondary: #7f8c8d;
+        --success-color: #2ecc71;
+        --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        --border-radius: 12px;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        color: var(--text-main);
+        line-height: 1.6;
+        background-color: var(--background-color);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        color: var(--text-main);
+    }
+
+    .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .tag {
+        background-color: #f0f7ff;
+        color: var(--primary-color);
+        font-size: 0.9rem;
+        padding: 5px 12px;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .description {
+        margin-bottom: 30px;
+        line-height: 1.7;
+    }
+
+    .audio-player {
+        background-color: #f9fafc;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        margin-top: 30px;
+    }
+
+    .audio-controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+
+    .play-button {
+        background-color: var(--primary-color);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        transition: all 0.3s;
+    }
+
+    .play-button:hover {
+        background-color: var(--secondary-color);
+        transform: scale(1.05);
+    }
+
+    .play-button i {
+        font-size: 20px;
+    }
+
+    .progress-container {
+        flex-grow: 1;
+        margin: 0 20px;
+    }
+
+    .progress-bar {
+        height: 8px;
+        width: 100%;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .progress {
+        height: 100%;
+        background-color: var(--primary-color);
+        border-radius: 4px;
+        width: 0%;
+        transition: width 0.1s linear;
+    }
+
+    .time {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 8px;
+    }
+
+    .volume-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .volume-icon {
+        margin-right: 10px;
+        color: var(--text-secondary);
+        cursor: pointer;
+    }
+
+    .volume-slider {
+        width: 80px;
+        height: 8px;
+    }
+
+    /* Form styles */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    .form-group select, 
+    .form-group input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    .slider-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .slider-container input[type="range"] {
+        flex-grow: 1;
+        margin-right: 10px;
+    }
+
+    .slider-value {
+        min-width: 40px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+    }
+
+    .checkbox-item input {
+        margin-right: 8px;
+    }
+
+    .advanced-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+        background-color: #f5f8fa;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .advanced-options {
+        display: none;
+        padding: 15px;
+        background-color: #f9fbfd;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #eaeef2;
+    }
+
+    button[type="submit"] {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 14px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s;
+    }
+
+    button[type="submit"]:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+    }
+
+    /* Results card */
+    .result-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-top: 40px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .result-heading {
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 30px;
+    }
+
+    .info-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .info-item {
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2.2rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+        }
+        
+        .card {
+            padding: 20px;
+        }
+        
+        .checkbox-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .audio-controls {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            margin: 15px 0;
+        }
+        
+        .volume-container {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+    
+    /* Loading spinner for the button */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+    }
+
+    .btn-loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin-top: -10px;
+        margin-left: -10px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Error notification */
+    .error-notification {
+        background-color: #fdeded;
+        border-left: 4px solid var(--accent-color);
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        display: none;
+    }
+
+    .error-notification p {
+        color: #e74c3c;
+        margin: 0;
+    }
+
+    /* Tooltip styles */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        margin-left: 8px;
+        cursor: pointer;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        cursor: pointer;
+        pointer-events: all;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px;
+        position: absolute;
+        z-index: 100;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -100px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: auto;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .tooltip i {
+        color: var(--primary-color);
+        font-size: 16px;
+    }
+
+    .tooltiptext a {
+        color: #fff;
+        text-decoration: underline;
+    }
+
+    .tooltiptext a:hover {
+        color: var(--primary-color);
+    }
+
+    /* Download button */
+    .download-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background-color: var(--success-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+    }
+
+    .download-button:hover {
+        background-color: #27ae60;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+    }
+
+    /* Footer section */
+    footer {
+        text-align: center;
+        margin-top: 60px;
+        padding: 30px 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 15px;
+    }
+
+    .footer-links a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+        color: var(--secondary-color);
+        text-decoration: underline;
+    }
+</style>
+
+</head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Therapy X</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+<style>
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2980b9;
+        --accent-color: #e74c3c;
+        --background-color: #a7cef4;
+        --light-bg: #bdd4f5;
+        --card-bg: #ffffff;
+        --text-main: #2c3e50;
+        --text-secondary: #7f8c8d;
+        --success-color: #2ecc71;
+        --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        --border-radius: 12px;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        color: var(--text-main);
+        line-height: 1.6;
+        background-color: var(--background-color);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        color: var(--text-main);
+    }
+
+    .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .tag {
+        background-color: #f0f7ff;
+        color: var(--primary-color);
+        font-size: 0.9rem;
+        padding: 5px 12px;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .description {
+        margin-bottom: 30px;
+        line-height: 1.7;
+    }
+
+    .audio-player {
+        background-color: #f9fafc;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        margin-top: 30px;
+    }
+
+    .audio-controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+
+    .play-button {
+        background-color: var(--primary-color);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        transition: all 0.3s;
+    }
+
+    .play-button:hover {
+        background-color: var(--secondary-color);
+        transform: scale(1.05);
+    }
+
+    .play-button i {
+        font-size: 20px;
+    }
+
+    .progress-container {
+        flex-grow: 1;
+        margin: 0 20px;
+    }
+
+    .progress-bar {
+        height: 8px;
+        width: 100%;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .progress {
+        height: 100%;
+        background-color: var(--primary-color);
+        border-radius: 4px;
+        width: 0%;
+        transition: width 0.1s linear;
+    }
+
+    .time {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 8px;
+    }
+
+    .volume-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .volume-icon {
+        margin-right: 10px;
+        color: var(--text-secondary);
+        cursor: pointer;
+    }
+
+    .volume-slider {
+        width: 80px;
+        height: 8px;
+    }
+
+    /* Form styles */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    .form-group select, 
+    .form-group input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    .slider-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .slider-container input[type="range"] {
+        flex-grow: 1;
+        margin-right: 10px;
+    }
+
+    .slider-value {
+        min-width: 40px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+    }
+
+    .checkbox-item input {
+        margin-right: 8px;
+    }
+
+    .advanced-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+        background-color: #f5f8fa;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .advanced-options {
+        display: none;
+        padding: 15px;
+        background-color: #f9fbfd;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #eaeef2;
+    }
+
+    button[type="submit"] {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 14px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s;
+    }
+
+    button[type="submit"]:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+    }
+
+    /* Results card */
+    .result-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-top: 40px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .result-heading {
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 30px;
+    }
+
+    .info-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .info-item {
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2.2rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+        }
+        
+        .card {
+            padding: 20px;
+        }
+        
+        .checkbox-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .audio-controls {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            margin: 15px 0;
+        }
+        
+        .volume-container {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+    
+    /* Loading spinner for the button */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+    }
+
+    .btn-loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin-top: -10px;
+        margin-left: -10px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Error notification */
+    .error-notification {
+        background-color: #fdeded;
+        border-left: 4px solid var(--accent-color);
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        display: none;
+    }
+
+    .error-notification p {
+        color: #e74c3c;
+        margin: 0;
+    }
+
+    /* Tooltip styles */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        margin-left: 8px;
+        cursor: pointer;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        cursor: pointer;
+        pointer-events: all;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px;
+        position: absolute;
+        z-index: 100;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -100px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: auto;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .tooltip i {
+        color: var(--primary-color);
+        font-size: 16px;
+    }
+
+    .tooltiptext a {
+        color: #fff;
+        text-decoration: underline;
+    }
+
+    .tooltiptext a:hover {
+        color: var(--primary-color);
+    }
+
+    /* Download button */
+    .download-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background-color: var(--success-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+    }
+
+    .download-button:hover {
+        background-color: #27ae60;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+    }
+
+    /* Footer section */
+    footer {
+        text-align: center;
+        margin-top: 60px;
+        padding: 30px 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 15px;
+    }
+
+    .footer-links a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+        color: var(--secondary-color);
+        text-decoration: underline;
+    }
+</style>
+
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+    <!-- Navbar -->
+    <nav class="bg-indigo-600 shadow-lg">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="text-white font-bold text-2xl select-none">LifeCoachX</div>
+                <ul class="flex space-x-6 text-indigo-200 text-lg font-semibold">
+                    <li><a href="chatbot" class="hover:text-white transition-colors">Chat Bot</a></li>
+                    <li><a href="user_data" class="hover:text-white transition-colors">Health Reports</a></li>
+                    <li><a href="sound" class="hover:text-white transition-colors">Music</a></li>
+                    <li><a href="diet" class="hover:text-white transition-colors">Diet</a></li>
+                    <li><a href="intake" class="hover:text-white transition-colors">Intaket</a></li>
+                    <li><a href="workout" class="hover:text-white transition-colors">Workout</a></li>
+                    <li><a href="http://localhost:3000/chat-app.html" class="hover:text-white transition-colors">Chat App</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-music"></i>
+            </div>
+            <h1>Music Therapy X</h1>
+            <p class="tagline">Generate personalized music to match your mood and boost your wellbeing</p>
+        </header>
+
+        <div class="card">
+            <h2>How are you feeling today?</h2>
+            
+            <div class="error-notification" id="error-notification">
+                <p>An error occurred. Please try again.</p>
+            </div>
+            
+            <form id="music-form">
+                <div class="form-group">
+                    <label for="mood">Select your mood:</label>
+                    <select id="mood" name="mood" required>
+                        <option value="energetic">Energetic</option>
+                        <option value="motivated">Motivated</option>
+                        <option value="tired">Tired</option>
+                        <option value="stressed">Stressed</option>
+                        <option value="happy">Happy</option>
+                        <option value="focus">Need to Focus</option>
+                        <option value="meditation">Meditation</option>
+                        <option value="relaxed">Relaxed</option>
+                        <option value="anxious">Anxious</option>
+                        <option value="creative">Creative</option>
+                        <option value="melancholic">Melancholic</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="intensity">Intensity level:</label>
+                    <div class="slider-container">
+                        <input type="range" id="intensity" name="intensity" min="1" max="5" value="3">
+                        <span class="slider-value" id="intensity-value">3</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Sound elements to include:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rhythm" name="soundTypes" value="rhythm" checked>
+                            <label for="rhythm">Rhythm</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="melody" name="soundTypes" value="melody" checked>
+                            <label for="melody">Melody</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ambient" name="soundTypes" value="ambient" checked>
+                            <label for="ambient">Ambient</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="effects" name="soundTypes" value="effects">
+                            <label for="effects">Effects</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="bass" name="soundTypes" value="bass">
+                            <label for="bass">Bass</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="binaural" name="soundTypes" value="binaural">
+                            <label for="binaural">Binaural</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="advanced-toggle" id="advanced-toggle">
+                    <span>Advanced Options</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="advanced-options" id="advanced-options">
+                    <div class="form-group">
+                        <label for="duration">Duration (seconds):</label>
+                        <input type="number" id="duration" name="duration" min="30" max="600" value="300">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tempo">Tempo (BPM):</label>
+                        <div class="slider-container">
+                            <input type="range" id="tempo" name="tempo" min="60" max="180" value="120">
+                            <span class="slider-value" id="tempo-value">120</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reverb">Reverb:</label>
+                        <div class="slider-container">
+                            <input type="range" id="reverb" name="reverb" min="0" max="1" step="0.1" value="0.3">
+                            <span class="slider-value" id="reverb-value">0.3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="freqShift">Frequency Shift:</label>
+                        <div class="slider-container">
+                            <input type="range" id="freqShift" name="freqShift" min="0.5" max="2" step="0.1" value="1.0">
+                            <span class="slider-value" id="freqShift-value">1.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="filterCutoff">Filter Cutoff:</label>
+                        <div class="slider-container">
+                            <input type="range" id="filterCutoff" name="filterCutoff" min="200" max="5000" step="100" value="1000">
+                            <span class="slider-value" id="filterCutoff-value">1000</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" id="generate-button">Generate Therapeutic Music</button>
+            </form>
+        </div>
+        
+        <div id="recommendation-display"></div>
+        
+        <footer>
+            <p>© 2025 Music Therapy X - Personalized Sound Healing</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">FAQ</a>
+                <a href="#">Privacy</a>
+                <a href="#">Contact</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM elements
+        const musicForm = document.getElementById('music-form');
+        const generateButton = document.getElementById('generate-button');
+        const recommendationDisplay = document.getElementById('recommendation-display');
+        const errorNotification = document.getElementById('error-notification');
+        const advancedToggle = document.getElementById('advanced-toggle');
+        const advancedOptions = document.getElementById('advanced-options');
+        
+        // Sliders
+        const intensitySlider = document.getElementById('intensity');
+        const intensityValue = document.getElementById('intensity-value');
+        const tempoSlider = document.getElementById('tempo');
+        const tempoValue = document.getElementById('tempo-value');
+        const reverbSlider = document.getElementById('reverb');
+        const reverbValue = document.getElementById('reverb-value');
+        const freqShiftSlider = document.getElementById('freqShift');
+        const freqShiftValue = document.getElementById('freqShift-value');
+        const filterCutoffSlider = document.getElementById('filterCutoff');
+        const filterCutoffValue = document.getElementById('filterCutoff-value');
+        
+        // Audio player state
+        let audioContext;
+        let audioPlayer;
+        let currentAudioId = null;
+        
+        // Initialize UI
+        initializeUI();
+        
+        // Form submission
+        musicForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateMusic();
+        });
+        
+        // Initialize UI elements
+        function initializeUI() {
+            // Set up slider value displays
+            setupSlider(intensitySlider, intensityValue);
+            setupSlider(tempoSlider, tempoValue);
+            setupSlider(reverbSlider, reverbValue, 1);
+            setupSlider(freqShiftSlider, freqShiftValue, 1);
+            setupSlider(filterCutoffSlider, filterCutoffValue);
+            
+            // Advanced options toggle
+            advancedToggle.addEventListener('click', function() {
+                advancedOptions.style.display = advancedOptions.style.display === 'block' ? 'none' : 'block';
+                const icon = advancedToggle.querySelector('i');
+                icon.className = advancedOptions.style.display === 'block' ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+            });
+        }
+        
+        // Set up slider and its value display
+        function setupSlider(slider, valueDisplay, decimals = 0) {
+            valueDisplay.textContent = parseFloat(slider.value).toFixed(decimals);
+            
+            slider.addEventListener('input', function() {
+                valueDisplay.textContent = parseFloat(this.value).toFixed(decimals);
+            });
+        }
+        
+        // Format time for audio player (seconds to MM:SS)
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // Generate music from form data
+        async function generateMusic() {
+            // Show loading state
+            generateButton.classList.add('btn-loading');
+            generateButton.disabled = true;
+            errorNotification.style.display = 'none';
+            
+            // Get form data
+            const mood = document.getElementById('mood').value;
+            const intensity = parseInt(intensitySlider.value);
+            const soundTypes = Array.from(document.querySelectorAll('input[name="soundTypes"]:checked')).map(el => el.value);
+            const duration = parseInt(document.getElementById('duration').value);
+            const tempo = parseInt(tempoSlider.value);
+            const reverb = parseFloat(reverbSlider.value);
+            const freqShift = parseFloat(freqShiftSlider.value);
+            const filterCutoff = parseInt(filterCutoffSlider.value);
+            
+            // Prepare request data
+            const requestData = {
+                mood,
+                intensity,
+                soundTypes,
+                duration,
+                tempo,
+                reverb,
+                freqShift,
+                filterCutoff
+            };
+            
+            try {
+                // Send request to the API
+                const response = await fetch('/api/generate_music', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                // Check for errors
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Server response:', data); // Add logging to debug
+                
+                if (!data.recommendation || !data.audio_id) {
+                    throw new Error('Invalid server response format');
+                }
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Display recommendation and audio player
+                displayMusicRecommendation(data.recommendation, data.audio_id);
+                
+            } catch (error) {
+                console.error('Error generating music:', error);
+                errorNotification.innerHTML = `<p>Error: ${error.message || 'Unable to generate music. Please try again.'}</p>`;
+                errorNotification.style.display = 'block';
+                
+                // Scroll to error
+                errorNotification.scrollIntoView({ behavior: 'smooth' });
+            } finally {
+                // Reset button state
+                generateButton.classList.remove('btn-loading');
+                generateButton.disabled = false;
+            }
+        }
+        
+        // Display music recommendation and audio player
+        function displayMusicRecommendation(recommendation, audioId) {
+            // Save current audio ID
+            currentAudioId = audioId;
+            
+            // Create tags HTML
+            const instrumentsHTML = recommendation.instruments.map(instrument => 
+                `<span class="tag">${instrument}</span>`
+            ).join('');
+            
+            const playlistHTML = recommendation.playlist_suggestions.map(suggestion => 
+                `<span class="tag">${suggestion}</span>`
+            ).join('');
+            
+            // Build recommendation HTML
+            const recommendationHTML = `
+                <div class="result-card">
+                    <h2 class="result-heading">Your Personalized Music Therapy</h2>
+                    
+                    <div class="info-section">
+                        <div class="info-item">
+                            <span class="info-label">Music Style</span>
+                            <div class="info-value">${recommendation.music_style}</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Tempo</span>
+                            <div class="info-value">${recommendation.tempo}</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Base Frequency</span>
+                            <div class="info-value">${recommendation.frequency} Hz</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Recommended Instruments</span>
+                            <div class="tag-list">
+                                ${instrumentsHTML}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="description">
+                        <p>${recommendation.description}</p>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Playlist Suggestions</span>
+                        <div class="tag-list">
+                            ${playlistHTML}
+                        </div>
+                    </div>
+                    
+                    <div class="audio-player">
+                        <h3>Listen to Your Therapeutic Sound</h3>
+                        <div class="audio-controls">
+                            <div class="play-button" id="play-button">
+                                <i class="fas fa-play" id="play-icon"></i>
+                            </div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar" id="progress-bar">
+                                    <div class="progress" id="progress"></div>
+                                </div>
+                                <div class="time">
+                                    <span id="current-time">0:00</span>
+                                    <span id="duration-time">0:00</span>
+                                </div>
+                            </div>
+                            
+                            <div class="volume-container">
+                                <div class="volume-icon">
+                                    <i class="fas fa-volume-up" id="volume-icon"></i>
+                                </div>
+                                <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.1" value="0.7">
+                            </div>
+                        </div>
+                        
+                        <!--<button class="download-button" id="download-button">
+                            <i class="fas fa-download"></i> Download Audio
+                        </button>-->
+                    </div>
+                </div>
+            `;
+            
+            // Update the display
+            recommendationDisplay.innerHTML = recommendationHTML;
+            
+            // Scroll to the recommendation
+            recommendationDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Add wave animation for audio visualization
+            const audioVisualization = `
+                <div class="wave-animation">
+                    ${Array.from({length: 8}, () => '<div class="wave-bar"></div>').join('')}
+                </div>
+            `;
+            recommendationDisplay.querySelector('.audio-player').insertAdjacentHTML('afterbegin', audioVisualization);
+
+            // Add tooltips to controls
+            const controlLabels = document.querySelectorAll('.info-label');
+            controlLabels.forEach(label => {
+                const tooltip = document.createElement('span');
+                tooltip.className = 'tooltip';
+                tooltip.innerHTML = '<i class="fas fa-info-circle"></i><span class="tooltiptext">Click to learn more</span>';
+                label.appendChild(tooltip);
+            });
+            // Set up audio player
+            setupAudioPlayer(audioId);
+            
+            // Download button functionality removed
+        }
+        
+        // Set up the audio player functionality
+        function setupAudioPlayer(audioId) {
+            // Audio elements
+            const playButton = document.getElementById('play-button');
+            const playIcon = document.getElementById('play-icon');
+            const progressBar = document.getElementById('progress-bar');
+            const progress = document.getElementById('progress');
+            const currentTimeDisplay = document.getElementById('current-time');
+            const durationTimeDisplay = document.getElementById('duration-time');
+            const volumeSlider = document.getElementById('volume-slider');
+            const volumeIcon = document.getElementById('volume-icon');
+            
+            // Create audio element
+            const audio = new Audio(`/api/audio/${audioId}`);
+            audioPlayer = audio;
+            
+            // Set initial volume
+            audio.volume = volumeSlider.value;
+            
+            // When audio metadata is loaded
+            audio.addEventListener('loadedmetadata', function() {
+                durationTimeDisplay.textContent = formatTime(audio.duration);
+            });
+            
+            // Play/pause button
+            playButton.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                    playIcon.className = 'fas fa-pause';
+                } else {
+                    audio.pause();
+                    playIcon.className = 'fas fa-play';
+                }
+            });
+            
+            // Update progress bar during playback
+            audio.addEventListener('timeupdate', function() {
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = progressPercent + '%';
+                currentTimeDisplay.textContent = formatTime(audio.currentTime);
+            });
+            
+            // Click on progress bar to seek
+            progressBar.addEventListener('click', function(e) {
+                const seekPosition = (e.offsetX / this.offsetWidth);
+                audio.currentTime = seekPosition * audio.duration;
+            });
+            
+            // Volume control
+            volumeSlider.addEventListener('input', function() {
+                audio.volume = this.value;
+                updateVolumeIcon(this.value);
+            });
+            
+            // Update volume icon based on level
+            function updateVolumeIcon(volume) {
+                if (volume >= 0.6) {
+                    volumeIcon.className = 'fas fa-volume-up';
+                } else if (volume > 0) {
+                    volumeIcon.className = 'fas fa-volume-down';
+                } else {
+                    volumeIcon.className = 'fas fa-volume-mute';
+                }
+            }
+            
+            // Toggle mute on volume icon click
+            volumeIcon.addEventListener('click', function() {
+                if (audio.volume > 0) {
+                    audio.volume = 0;
+                    volumeSlider.value = 0;
+                    volumeIcon.className = 'fas fa-volume-mute';
+                } else {
+                    audio.volume = 0.7;
+                    volumeSlider.value = 0.7;
+                    volumeIcon.className = 'fas fa-volume-up';
+                }
+            });
+            
+            // When audio ends
+            audio.addEventListener('ended', function() {
+                playIcon.className = 'fas fa-play';
+                progress.style.width = '0%';
+                audio.currentTime = 0;
+            });
+            
+            // Handle errors
+            audio.addEventListener('error', function() {
+                errorNotification.innerHTML = '<p>Error playing audio. Please try generating a new track.</p>';
+                errorNotification.style.display = 'block';
+            });
+        }
+        
+        // Clean up when leaving the page
+        window.addEventListener('beforeunload', function() {
+            if (audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer = null;
+            }
+        });
+    });
+    </script>
+</body>
+</html>
+   <!-- <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-music"></i>
+            </div>
+            <h1>Music Therapy X</h1>
+            <p class="tagline">Generate personalized music to match your mood and boost your wellbeing</p>
+        </header>
+
+        <div class="card">
+            <h2>How are you feeling today?</h2>
+            
+            <div class="error-notification" id="error-notification">
+                <p>An error occurred. Please try again.</p>
+            </div>
+            
+            <form id="music-form">
+                <div class="form-group">
+                    <label for="mood">Select your mood:</label>
+                    <select id="mood" name="mood" required>
+                        <option value="energetic">Energetic</option>
+                        <option value="motivated">Motivated</option>
+                        <option value="tired">Tired</option>
+                        <option value="stressed">Stressed</option>
+                        <option value="happy">Happy</option>
+                        <option value="focus">Need to Focus</option>
+                        <option value="meditation">Meditation</option>
+                        <option value="relaxed">Relaxed</option>
+                        <option value="anxious">Anxious</option>
+                        <option value="creative">Creative</option>
+                        <option value="melancholic">Melancholic</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="intensity">Intensity level:</label>
+                    <div class="slider-container">
+                        <input type="range" id="intensity" name="intensity" min="1" max="5" value="3">
+                        <span class="slider-value" id="intensity-value">3</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Sound elements to include:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rhythm" name="soundTypes" value="rhythm" checked>
+                            <label for="rhythm">Rhythm</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="melody" name="soundTypes" value="melody" checked>
+                            <label for="melody">Melody</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ambient" name="soundTypes" value="ambient" checked>
+                            <label for="ambient">Ambient</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="effects" name="soundTypes" value="effects">
+                            <label for="effects">Effects</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="bass" name="soundTypes" value="bass">
+                            <label for="bass">Bass</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="binaural" name="soundTypes" value="binaural">
+                            <label for="binaural">Binaural</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="advanced-toggle" id="advanced-toggle">
+                    <span>Advanced Options</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="advanced-options" id="advanced-options">
+                    <div class="form-group">
+                        <label for="duration">Duration (seconds):</label>
+                        <input type="number" id="duration" name="duration" min="30" max="600" value="300">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tempo">Tempo (BPM):</label>
+                        <div class="slider-container">
+                            <input type="range" id="tempo" name="tempo" min="60" max="180" value="120">
+                            <span class="slider-value" id="tempo-value">120</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reverb">Reverb:</label>
+                        <div class="slider-container">
+                            <input type="range" id="reverb" name="reverb" min="0" max="1" step="0.1" value="0.3">
+                            <span class="slider-value" id="reverb-value">0.3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="freqShift">Frequency Shift:</label>
+                        <div class="slider-container">
+                            <input type="range" id="freqShift" name="freqShift" min="0.5" max="2" step="0.1" value="1.0">
+                            <span class="slider-value" id="freqShift-value">1.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="filterCutoff">Filter Cutoff:</label>
+                        <div class="slider-container">
+                            <input type="range" id="filterCutoff" name="filterCutoff" min="200" max="5000" step="100" value="1000">
+                            <span class="slider-value" id="filterCutoff-value">1000</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" id="generate-button">Generate Therapeutic Music</button>
+            </form>
+        </div>
+        
+        <div id="recommendation-display"></div>
+        
+        <footer>
+            <p>© 2025 Music Therapy X - Personalized Sound Healing</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">FAQ</a>
+                <a href="#">Privacy</a>
+                <a href="#">Contact</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM elements
+        const musicForm = document.getElementById('music-form');
+        const generateButton = document.getElementById('generate-button');
+        const recommendationDisplay = document.getElementById('recommendation-display');
+        const errorNotification = document.getElementById('error-notification');
+        const advancedToggle = document.getElementById('advanced-toggle');
+        const advancedOptions = document.getElementById('advanced-options');
+        
+        // Sliders
+        const intensitySlider = document.getElementById('intensity');
+        const intensityValue = document.getElementById('intensity-value');
+        const tempoSlider = document.getElementById('tempo');
+        const tempoValue = document.getElementById('tempo-value');
+        const reverbSlider = document.getElementById('reverb');
+        const reverbValue = document.getElementById('reverb-value');
+        const freqShiftSlider = document.getElementById('freqShift');
+        const freqShiftValue = document.getElementById('freqShift-value');
+        const filterCutoffSlider = document.getElementById('filterCutoff');
+        const filterCutoffValue = document.getElementById('filterCutoff-value');
+        
+        // Audio player state
+        let audioContext;
+        let audioPlayer;
+        let currentAudioId = null;
+        
+        // Initialize UI
+        initializeUI();
+        
+        // Form submission
+        musicForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateMusic();
+        });
+        
+        // Initialize UI elements
+        function initializeUI() {
+            // Set up slider value displays
+            setupSlider(intensitySlider, intensityValue);
+            setupSlider(tempoSlider, tempoValue);
+            setupSlider(reverbSlider, reverbValue, 1);
+            setupSlider(freqShiftSlider, freqShiftValue, 1);
+            setupSlider(filterCutoffSlider, filterCutoffValue);
+            
+            // Advanced options toggle
+            advancedToggle.addEventListener('click', function() {
+                advancedOptions.style.display = advancedOptions.style.display === 'block' ? 'none' : 'block';
+                const icon = advancedToggle.querySelector('i');
+                icon.className = advancedOptions.style.display === 'block' ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+            });
+        }
+        
+        // Set up slider and its value display
+        function setupSlider(slider, valueDisplay, decimals = 0) {
+            valueDisplay.textContent = parseFloat(slider.value).toFixed(decimals);
+            
+            slider.addEventListener('input', function() {
+                valueDisplay.textContent = parseFloat(this.value).toFixed(decimals);
+            });
+        }
+        
+        // Format time for audio player (seconds to MM:SS)
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // Generate music from form data
+        async function generateMusic() {
+            // Show loading state
+            generateButton.classList.add('btn-loading');
+            generateButton.disabled = true;
+            errorNotification.style.display = 'none';
+            
+            // Get form data
+            const mood = document.getElementById('mood').value;
+            const intensity = parseInt(intensitySlider.value);
+            const soundTypes = Array.from(document.querySelectorAll('input[name="soundTypes"]:checked')).map(el => el.value);
+            const duration = parseInt(document.getElementById('duration').value);
+            const tempo = parseInt(tempoSlider.value);
+            const reverb = parseFloat(reverbSlider.value);
+            const freqShift = parseFloat(freqShiftSlider.value);
+            const filterCutoff = parseInt(filterCutoffSlider.value);
+            
+            // Prepare request data
+            const requestData = {
+                mood,
+                intensity,
+                soundTypes,
+                duration,
+                tempo,
+                reverb,
+                freqShift,
+                filterCutoff
+            };
+            
+            try {
+                // Send request to the API
+                const response = await fetch('/api/generate_music', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                // Check for errors
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Server response:', data); // Add logging to debug
+                
+                if (!data.recommendation || !data.audio_id) {
+                    throw new Error('Invalid server response format');
+                }
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Display recommendation and audio player
+                displayMusicRecommendation(data.recommendation, data.audio_id);
+                
+            } catch (error) {
+                console.error('Error generating music:', error);
+                errorNotification.innerHTML = `<p>Error: ${error.message || 'Unable to generate music. Please try again.'}</p>`;
+                errorNotification.style.display = 'block';
+                
+                // Scroll to error
+                errorNotification.scrollIntoView({ behavior: 'smooth' });
+            } finally {
+                // Reset button state
+                generateButton.classList.remove('btn-loading');
+                generateButton.disabled = false;
+            }
+        }
+        
+        // Display music recommendation and audio player
+        function displayMusicRecommendation(recommendation, audioId) {
+            // Save current audio ID
+            currentAudioId = audioId;
+            
+            // Create tags HTML
+            const instrumentsHTML = recommendation.instruments.map(instrument => 
+                `<span class="tag">${instrument}</span>`
+            ).join('');
+            
+            const playlistHTML = recommendation.playlist_suggestions.map(suggestion => 
+                `<span class="tag">${suggestion}</span>`
+            ).join('');
+            
+            // Build recommendation HTML
+            const recommendationHTML = `
+                <div class="result-card">
+                    <h2 class="result-heading">Your Personalized Music Therapy</h2>
+                    
+                    <div class="info-section">
+                        <div class="info-item">
+                            <span class="info-label">Music Style</span>
+                            <div class="info-value">${recommendation.music_style}</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Tempo</span>
+                            <div class="info-value">${recommendation.tempo}</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Base Frequency</span>
+                            <div class="info-value">${recommendation.frequency} Hz</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Recommended Instruments</span>
+                            <div class="tag-list">
+                                ${instrumentsHTML}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="description">
+                        <p>${recommendation.description}</p>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Playlist Suggestions</span>
+                        <div class="tag-list">
+                            ${playlistHTML}
+                        </div>
+                    </div>
+                    
+                    <div class="audio-player">
+                        <h3>Listen to Your Therapeutic Sound</h3>
+                        <div class="audio-controls">
+                            <div class="play-button" id="play-button">
+                                <i class="fas fa-play" id="play-icon"></i>
+                            </div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar" id="progress-bar">
+                                    <div class="progress" id="progress"></div>
+                                </div>
+                                <div class="time">
+                                    <span id="current-time">0:00</span>
+                                    <span id="duration-time">0:00</span>
+                                </div>
+                            </div>
+                            
+                            <div class="volume-container">
+                                <div class="volume-icon">
+                                    <i class="fas fa-volume-up" id="volume-icon"></i>
+                                </div>
+                                <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.1" value="0.7">
+                            </div>
+                        </div>
+                        
+                        <!--<button class="download-button" id="download-button">
+                            <i class="fas fa-download"></i> Download Audio
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Update the display
+            recommendationDisplay.innerHTML = recommendationHTML;
+            
+            // Scroll to the recommendation
+            recommendationDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Add wave animation for audio visualization
+            const audioVisualization = `
+                <div class="wave-animation">
+                    ${Array.from({length: 8}, () => '<div class="wave-bar"></div>').join('')}
+                </div>
+            `;
+            recommendationDisplay.querySelector('.audio-player').insertAdjacentHTML('afterbegin', audioVisualization);
+
+            // Add tooltips to controls
+            const controlLabels = document.querySelectorAll('.info-label');
+            controlLabels.forEach(label => {
+                const tooltip = document.createElement('span');
+                tooltip.className = 'tooltip';
+                tooltip.innerHTML = '<i class="fas fa-info-circle"></i><span class="tooltiptext">Click to learn more</span>';
+                label.appendChild(tooltip);
+            });
+            // Set up audio player
+            setupAudioPlayer(audioId);
+            
+            // Download button functionality removed
+        }
+        
+        // Set up the audio player functionality
+        function setupAudioPlayer(audioId) {
+            // Audio elements
+            const playButton = document.getElementById('play-button');
+            const playIcon = document.getElementById('play-icon');
+            const progressBar = document.getElementById('progress-bar');
+            const progress = document.getElementById('progress');
+            const currentTimeDisplay = document.getElementById('current-time');
+            const durationTimeDisplay = document.getElementById('duration-time');
+            const volumeSlider = document.getElementById('volume-slider');
+            const volumeIcon = document.getElementById('volume-icon');
+            
+            // Create audio element
+            const audio = new Audio(`/api/audio/${audioId}`);
+            audioPlayer = audio;
+            
+            // Set initial volume
+            audio.volume = volumeSlider.value;
+            
+            // When audio metadata is loaded
+            audio.addEventListener('loadedmetadata', function() {
+                durationTimeDisplay.textContent = formatTime(audio.duration);
+            });
+            
+            // Play/pause button
+            playButton.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                    playIcon.className = 'fas fa-pause';
+                } else {
+                    audio.pause();
+                    playIcon.className = 'fas fa-play';
+                }
+            });
+            
+            // Update progress bar during playback
+            audio.addEventListener('timeupdate', function() {
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = progressPercent + '%';
+                currentTimeDisplay.textContent = formatTime(audio.currentTime);
+            });
+            
+            // Click on progress bar to seek
+            progressBar.addEventListener('click', function(e) {
+                const seekPosition = (e.offsetX / this.offsetWidth);
+                audio.currentTime = seekPosition * audio.duration;
+            });
+            
+            // Volume control
+            volumeSlider.addEventListener('input', function() {
+                audio.volume = this.value;
+                updateVolumeIcon(this.value);
+            });
+            
+            // Update volume icon based on level
+            function updateVolumeIcon(volume) {
+                if (volume >= 0.6) {
+                    volumeIcon.className = 'fas fa-volume-up';
+                } else if (volume > 0) {
+                    volumeIcon.className = 'fas fa-volume-down';
+                } else {
+                    volumeIcon.className = 'fas fa-volume-mute';
+                }
+            }
+            
+            // Toggle mute on volume icon click
+            volumeIcon.addEventListener('click', function() {
+                if (audio.volume > 0) {
+                    audio.volume = 0;
+                    volumeSlider.value = 0;
+                    volumeIcon.className = 'fas fa-volume-mute';
+                } else {
+                    audio.volume = 0.7;
+                    volumeSlider.value = 0.7;
+                    volumeIcon.className = 'fas fa-volume-up';
+                }
+            });
+            
+            // When audio ends
+            audio.addEventListener('ended', function() {
+                playIcon.className = 'fas fa-play';
+                progress.style.width = '0%';
+                audio.currentTime = 0;
+            });
+            
+            // Handle errors
+            audio.addEventListener('error', function() {
+                errorNotification.innerHTML = '<p>Error playing audio. Please try generating a new track.</p>';
+                errorNotification.style.display = 'block';
+            });
+        }
+        
+        // Clean up when leaving the page
+        window.addEventListener('beforeunload', function() {
+            if (audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer = null;
+            }
+        });
+    });
+    </script>-->
+</body>
+</html>
