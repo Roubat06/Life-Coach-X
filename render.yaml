@@ -12,32 +12,7 @@ services:
         generateValue: true
       - key: GEMINI_API_KEY
         sync: false  # Means you'll set this value manually in the Render dashboard
-      # Database connection environment variables
-      - key: MYSQL_HOST
-        fromService:
-          name: mysql
-          type: mysql
-          property: host
-      - key: MYSQL_PORT
-        fromService:
-          name: mysql
-          type: mysql
-          property: port
-      - key: MYSQL_USER
-        fromService:
-          name: mysql
-          type: mysql
-          property: user
-      - key: MYSQL_PASSWORD
-        fromService:
-          name: mysql
-          type: mysql
-          property: password
-      - key: MYSQL_DATABASE
-        fromService:
-          name: mysql
-          type: mysql
-          property: database
+      # Database connection environment variables will be set manually
     
   # Node.js application
   - type: web
@@ -52,41 +27,9 @@ services:
         generateValue: true
       - key: GEMINI_API_KEY
         sync: false  # Means you'll set this value manually in the Render dashboard
-      # Database connection environment variables
-      - key: MYSQL_HOST
-        fromService:
-          name: mysql
-          type: mysql
-          property: host
-      - key: MYSQL_PORT
-        fromService:
-          name: mysql
-          type: mysql
-          property: port
-      - key: MYSQL_USER
-        fromService:
-          name: mysql
-          type: mysql
-          property: user
-      - key: MYSQL_PASSWORD
-        fromService:
-          name: mysql
-          type: mysql
-          property: password
-      - key: MYSQL_DATABASE
-        fromService:
-          name: mysql
-          type: mysql
-          property: database
+      # Database connection environment variables will be set manually
 
 databases:
-  - name: mysql
-    type: mysql
-    ipAllowList: []  # Allow connections from everywhere
+  - name: mysql-db
+    databaseName: app_db
     plan: free  # Adjust to your needed plan: free, starter, etc.
-
-staticSites:
-  - name: static-assets
-    buildCommand: echo "No build needed for static assets"
-    publishDir: flask/static
-    pullRequestPreviewsEnabled: false
