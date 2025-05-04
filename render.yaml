@@ -28,8 +28,3 @@ services:
       - key: GEMINI_API_KEY
         sync: false  # Means you'll set this value manually in the Render dashboard
       # Database connection environment variables will be set manually
-
-databases:
-  - name: mysql-db
-    databaseName: app_db
-    plan: free  # Adjust to your needed plan: free, starter, etc.
